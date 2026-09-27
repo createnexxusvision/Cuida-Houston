@@ -1,7 +1,7 @@
 {
   "name": "cuida-hou",
   "private": true,
-  "description": "Bilingual two-sided childcare network for Houston (Impact Hub Houston hackathon 2026)",
+  "description": "Bilingual two-sided childcare network for Houston (Impact Hub Houston hackathon 2026). AWS: Amplify + Lambda + Aurora Serverless v2.",
   "workspaces": [
     "apps/web",
     "services/etl"
@@ -15,6 +15,8 @@
     "typecheck": "npm run typecheck -w @cuida-hou/web",
     "test": "npm test -w @cuida-hou/etl && npm test -w @cuida-hou/web",
     "etl:dry-run": "npm run dry-run -w @cuida-hou/etl",
-    "etl:sync": "npm run sync -w @cuida-hou/etl"
+    "etl:sync": "npm run sync -w @cuida-hou/etl",
+    "db:migrate": "npm run db:migrate -w @cuida-hou/etl",
+    "db:seed": "npm run db:seed -w @cuida-hou/etl"
   }
 }
