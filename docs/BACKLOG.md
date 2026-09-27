@@ -20,7 +20,7 @@ Suggested GitHub issues. Labels: `blocker`, `P0`, `P1`, `P2`, `data`, `content`,
 - [ ] Native-speaker review of all Spanish strings and seed content `content`
 - [ ] Confirm HHSC public-record deep link for each operation `P0`
 - [ ] Deploy Amplify + SAM; AWS Budgets alarm `infra`
-- [ ] Fix pitch deck slide 4 (waitlist framing)
+- [x] Fix pitch deck slide 4 (waitlist framing)
 
 ## P1 (pilot)
 - [ ] Provider interest form with consent + encryption (F8)
