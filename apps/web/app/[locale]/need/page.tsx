@@ -1,5 +1,5 @@
 import { getMessages, fmt } from '@/lib/i18n';
-import { getSupabase } from '@/lib/supabase';
+import { getDb } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,14 +16,14 @@ export default async function NeedPage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const t = getMessages(locale);
   const n = t.need;
-  const db = getSupabase();
-  const { data } = db
-    ? await db.from('zcta_need')
-        .select('zcta,children_u6_working,capacity,seats_per_100,desert,pct_hispanic,pct_black,black_hispanic,black_hispanic_moe,multi_county,acs_vintage,computed_at')
-        .not('seats_per_100', 'is', null)
-        .order('seats_per_100', { ascending: true })
-    : { data: null };
-  const rows = (data ?? []) as Row[];
+  const db = await getDb();
+  const rows = db
+    ? await db.json<Row>(
+        `select to_jsonb(z)::text as j from (
+           select zcta, children_u6_working, capacity, seats_per_100, desert, pct_hispanic, pct_black,
+                  black_hispanic, black_hispanic_moe, multi_county, acs_vintage, computed_at
+             from zcta_need where seats_per_100 is not null order by seats_per_100) z`)
+    : [];
   const num = new Intl.NumberFormat(locale === 'es' ? 'es-US' : 'en-US');
   const deserts = rows.filter((r) => r.desert).length;
   const maxPer100 = Math.max(100, ...rows.map((r) => Number(r.seats_per_100) || 0));

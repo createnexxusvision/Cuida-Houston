@@ -24,8 +24,16 @@ jobs:
           --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@v4
-      - name: Apply migration and seed
-        env: { PGPASSWORD: postgres }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Migrate, seed and run the end-to-end check
+        working-directory: services/etl
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+          WEB_DB_PASSWORD: ci-web-reader-pass
+          OWNER_DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+          WEB_DATABASE_URL: postgres://cuida_web:ci-web-reader-pass@localhost:5432/postgres
         run: |
-          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20260926000000_init.sql
-          psql -h localhost -U postgres -v ON_ERROR_STOP=1 -f supabase/seed.sql
+          node src/migrate.js --seed
+          node test/e2e-local.mjs

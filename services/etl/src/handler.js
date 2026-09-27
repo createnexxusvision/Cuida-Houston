@@ -1,32 +1,39 @@
 // AWS Lambda entry point. Triggered nightly by EventBridge Scheduler (see infra/template.yaml).
 // Steps: fetch HHSC rows -> clean -> geocode new/changed rows -> upsert providers -> recompute ZCTA need.
-import { createClient } from '@supabase/supabase-js';
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
+import { createDb, chunkByBytes } from './db.js';
 import { fetchAllOperations } from './hhsc.js';
 import { cleanRows, approxPoint } from './clean.js';
 import { geocodeBatch, MAX_BATCH } from './geocode.js';
 import { fetchAcsByZcta } from './acs.js';
 import { capacityByZip, computeNeed } from './need.js';
 
+// API keys (Census, Socrata) live in one Secrets Manager secret in AWS; locally they come from .env.
 async function loadSecrets() {
-  if (!process.env.SECRET_ARN) return process.env; // local dev: read from .env
+  if (!process.env.APP_SECRET_ARN) return process.env;
   const sm = new SecretsManagerClient({});
-  const out = await sm.send(new GetSecretValueCommand({ SecretId: process.env.SECRET_ARN }));
+  const out = await sm.send(new GetSecretValueCommand({ SecretId: process.env.APP_SECRET_ARN }));
   return { ...process.env, ...JSON.parse(out.SecretString) };
 }
 
 export async function run({ dryRun = false } = {}) {
   const env = await loadSecrets();
-  const db = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
+  const db = await createDb(env);
+  try {
+    return await sync(env, db, { dryRun });
+  } finally {
+    await db.end();
+  }
+}
 
+async function sync(env, db, { dryRun }) {
   const raw = await fetchAllOperations({ county: env.COUNTY ?? 'HARRIS', appToken: env.SOCRATA_APP_TOKEN });
   const providers = cleanRows(raw);
   console.log(JSON.stringify({ step: 'fetch', raw: raw.length, kept: providers.length }));
 
   // Only geocode rows that are new or changed since the last run.
-  const { data: existing, error: exErr } = await db.from('providers').select('operation_id,row_hash');
-  if (exErr) throw exErr;
-  const known = new Map((existing ?? []).map((r) => [r.operation_id, r.row_hash]));
+  const existing = await db.query('select operation_id, row_hash from providers where active');
+  const known = new Map(existing.map((r) => [r.operation_id, r.row_hash]));
   const changed = providers.filter((p) => known.get(p.operation_id) !== p.row_hash);
 
   const geo = new Map();
@@ -60,16 +67,15 @@ export async function run({ dryRun = false } = {}) {
 
   if (dryRun) return { upserts: rows.length, inactive: gone.length, zctas: need.length, sample: need.slice(0, 5) };
 
-  for (let i = 0; i < rows.length; i += 500) {
-    const { error } = await db.rpc('upsert_providers', { payload: rows.slice(i, i + 500) });
-    if (error) throw error;
+  for (const chunk of chunkByBytes(rows)) {
+    await db.query('select upsert_providers(:payload::jsonb) as n', { payload: chunk });
   }
-  if (gone.length) {
-    const { error } = await db.from('providers').update({ active: false }).in('operation_id', gone);
-    if (error) throw error;
+  for (const chunk of chunkByBytes(gone.map((id) => ({ id })))) {
+    await db.query('select mark_providers_inactive(:ids::jsonb) as n', { ids: chunk.map((c) => c.id) });
   }
-  const { error: needErr } = await db.from('zcta_need').upsert(need, { onConflict: 'zcta' });
-  if (needErr) throw needErr;
+  for (const chunk of chunkByBytes(need)) {
+    await db.query('select upsert_zcta_need(:payload::jsonb) as n', { payload: chunk });
+  }
 
   return { upserts: rows.length, inactive: gone.length, zctas: need.length };
 }

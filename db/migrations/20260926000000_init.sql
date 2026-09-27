@@ -1,4 +1,4 @@
--- Cuida HOU initial schema. Postgres 15+ with PostGIS (enabled by default-available extension on Supabase).
+-- Cuida HOU initial schema. Aurora PostgreSQL 16 (or any Postgres 15+) with PostGIS.
 create extension if not exists postgis;
 
 -- ---------------------------------------------------------------------------
@@ -128,7 +128,8 @@ create table if not exists public.seat_reports (          -- P1
 );
 
 -- ---------------------------------------------------------------------------
--- Row-level security. Public reads go through search_providers(); no direct table access.
+-- Row-level security on, with no policies: only the table owner (the pipeline) reads or writes tables directly.
+-- The web app reads through search_providers() and granted reference tables (see roles migration).
 -- ---------------------------------------------------------------------------
 alter table public.providers      enable row level security;
 alter table public.zcta_need      enable row level security;
@@ -138,13 +139,7 @@ alter table public.partners       enable row level security;
 alter table public.provider_leads enable row level security;
 alter table public.seat_reports   enable row level security;
 
-do $$ begin
-  if exists (select 1 from pg_roles where rolname = 'anon') then
-    execute 'create policy zcta_need_read on public.zcta_need for select to anon, authenticated using (true)';
-    execute 'create policy transit_read on public.transit_stops for select to anon, authenticated using (true)';
-    execute 'create policy pathway_read on public.pathway_steps for select to anon, authenticated using (true)';
-  end if;
-end $$;
+-- Access for the web app is granted to the cuida_web role in a later migration.
 
 -- ---------------------------------------------------------------------------
 -- Search: returns only public-safe columns. Home providers never expose street address or exact point.
@@ -233,9 +228,4 @@ begin
 end $$;
 
 revoke all on function public.upsert_providers(jsonb) from public;
-do $$ begin
-  if exists (select 1 from pg_roles where rolname = 'anon') then
-    execute 'revoke all on function public.upsert_providers(jsonb) from anon, authenticated';
-    execute 'grant execute on function public.search_providers(char, double precision, double precision, integer, text, boolean, time, text, integer) to anon, authenticated';
-  end if;
-end $$;
+revoke all on function public.search_providers(char, double precision, double precision, integer, text, boolean, time, text, integer) from public;

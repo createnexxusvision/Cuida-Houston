@@ -23,7 +23,7 @@
     "results": "{n} licensed programs",
     "none": "No licensed programs match. Try another ZIP or fewer filters.",
     "capacityNote": "Numbers show licensed capacity, not open seats. Call to ask about openings.",
-    "notConfigured": "Search is not connected to a database yet. Set SUPABASE_URL and SUPABASE_ANON_KEY."
+    "notConfigured": "Search is not connected to a database yet. Set DB_CLUSTER_ARN and DB_SECRET_ARN (AWS) or DATABASE_URL (local)."
   },
   "result": {
     "center": "Center",

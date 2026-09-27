@@ -1,15 +1,4 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-
-let client: SupabaseClient | null = null;
-
-/** Server-side client using the public anon key. Returns null when env vars are missing. */
-export function getSupabase(): SupabaseClient | null {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_ANON_KEY;
-  if (!url || !key) return null;
-  client ??= createClient(url, key, { auth: { persistSession: false } });
-  return client;
-}
+import { getDb } from '@/lib/db';
 
 export type ProviderResult = {
   operation_id: string;
@@ -60,16 +49,12 @@ export function parseSearch(sp: Record<string, string | string[] | undefined>): 
 }
 
 export async function searchProviders(p: SearchParams): Promise<ProviderResult[] | null> {
-  const db = getSupabase();
+  const db = await getDb();
   if (!db) return null;
-  const { data, error } = await db.rpc('search_providers', {
-    p_zip: p.zip ?? null,
-    p_age: p.age ?? null,
-    p_subsidy: p.subsidy ?? null,
-    p_opens_by: p.opensBy ?? null,
-    p_day: p.day ?? null,
-    p_limit: 50,
-  });
-  if (error) throw new Error(error.message);
-  return data as ProviderResult[];
+  return db.json<ProviderResult>(
+    `select to_jsonb(r)::text as j
+       from search_providers(p_zip => :zip::char(5), p_age => :age, p_subsidy => :subsidy,
+                             p_opens_by => :opens_by::time, p_day => :day, p_limit => 50) r`,
+    { zip: p.zip ?? null, age: p.age ?? null, subsidy: p.subsidy ?? null, opens_by: p.opensBy ?? null, day: p.day ?? null },
+  );
 }

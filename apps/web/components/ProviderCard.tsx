@@ -1,4 +1,4 @@
-import type { ProviderResult } from '@/lib/supabase';
+import type { ProviderResult } from '@/lib/data';
 import { fmt, type Messages } from '@/lib/i18n';
 
 const HHSC_SEARCH = 'https://childcare.hhs.texas.gov/Public/ChildCareSearch';

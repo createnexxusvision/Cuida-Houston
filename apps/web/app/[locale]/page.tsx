@@ -1,5 +1,5 @@
 import { getMessages, fmt } from '@/lib/i18n';
-import { parseSearch, searchProviders } from '@/lib/supabase';
+import { parseSearch, searchProviders } from '@/lib/data';
 import { ProviderCard } from '@/components/ProviderCard';
 
 export const dynamic = 'force-dynamic';

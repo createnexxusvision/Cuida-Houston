@@ -23,7 +23,7 @@
     "results": "{n} programas con licencia",
     "none": "No hay programas con licencia que coincidan. Pruebe otro código postal o menos filtros.",
     "capacityNote": "Los números muestran la capacidad con licencia, no los cupos disponibles. Llame para preguntar si hay espacio.",
-    "notConfigured": "La búsqueda aún no está conectada a una base de datos. Configure SUPABASE_URL y SUPABASE_ANON_KEY."
+    "notConfigured": "La búsqueda aún no está conectada a una base de datos. Configure DB_CLUSTER_ARN y DB_SECRET_ARN (AWS) o DATABASE_URL (local)."
   },
   "result": {
     "center": "Centro",

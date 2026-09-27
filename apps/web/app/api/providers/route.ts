@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { parseSearch, searchProviders } from '@/lib/supabase';
+import { parseSearch, searchProviders } from '@/lib/data';
 
 // GET /api/providers?zip=77021&age=Toddler&subsidy=1&opensBy=06:30
 export async function GET(req: NextRequest) {

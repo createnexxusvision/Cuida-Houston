@@ -3,16 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Nightly data pipeline: HHSC licensing + Census ACS + geocoding -> Supabase",
+  "description": "Nightly data pipeline: HHSC licensing + Census ACS + geocoding -> Aurora PostgreSQL",
   "main": "src/handler.js",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "test": "node --test \"test/**/*.test.js\"",
-    "dry-run": "node --env-file=../../.env -e \"import('./src/handler.js').then(m => m.run({ dryRun: true })).then(r => console.log(JSON.stringify(r, null, 2)))\"",
-    "sync": "node --env-file=../../.env -e \"import('./src/handler.js').then(m => m.run()).then(r => console.log(r))\""
+    "dry-run": "node --env-file-if-exists=../../.env -e \"import('./src/handler.js').then(m => m.run({ dryRun: true })).then(r => console.log(JSON.stringify(r, null, 2)))\"",
+    "sync": "node --env-file-if-exists=../../.env -e \"import('./src/handler.js').then(m => m.run()).then(r => console.log(r))\"",
+    "db:migrate": "node --env-file-if-exists=../../.env src/migrate.js",
+    "db:seed": "node --env-file-if-exists=../../.env src/migrate.js --seed"
   },
   "dependencies": {
+    "@aws-sdk/client-rds-data": "^3.600.0",
     "@aws-sdk/client-secrets-manager": "^3.600.0",
-    "@supabase/supabase-js": "^2.45.0"
+    "pg": "^8.12.0"
   }
 }

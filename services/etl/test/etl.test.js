@@ -113,3 +113,40 @@ test('Harris County ZCTA crosswalk', () => {
 test('ACS fetch refuses to run without a key', async () => {
   await assert.rejects(() => fetchAcsByZcta({ key: undefined }), /CENSUS_API_KEY is required/);
 });
+
+import { toPositional, toDataApiParams, chunkByBytes } from '../src/db.js';
+import { splitSql } from '../src/migrate.js';
+
+test('named params -> positional, casts untouched', () => {
+  const q = toPositional('select upsert_providers(:payload::jsonb), :zip::char(5), :zip, now()::date', { payload: [1], zip: '77021' });
+  assert.equal(q.text, 'select upsert_providers($1::jsonb), $2::char(5), $2, now()::date');
+  assert.deepEqual(q.values, ['[1]', '77021']); // arrays/objects become JSON text
+  assert.throws(() => toPositional('select :missing', {}), /Missing SQL parameter :missing/);
+});
+
+test('Data API parameter typing', () => {
+  assert.deepEqual(toDataApiParams({ a: null, b: true, c: 5, d: 2.5, e: 'x', f: [1] }), [
+    { name: 'a', value: { isNull: true } },
+    { name: 'b', value: { booleanValue: true } },
+    { name: 'c', value: { longValue: 5 } },
+    { name: 'd', value: { doubleValue: 2.5 } },
+    { name: 'e', value: { stringValue: 'x' } },
+    { name: 'f', value: { stringValue: '[1]' }, typeHint: 'JSON' },
+  ]);
+});
+
+test('chunks stay under the byte budget', () => {
+  const rows = Array.from({ length: 50 }, (_, i) => ({ id: i, pad: 'x'.repeat(100) }));
+  const chunks = chunkByBytes(rows, 1000);
+  assert.equal(chunks.flat().length, 50);
+  assert.ok(chunks.every((c) => Buffer.byteLength(JSON.stringify(c)) <= 1000));
+});
+
+test('SQL splitter respects quotes, dollar bodies and comments', () => {
+  const sql = "create table t (a text default 'x;y');\n-- comment; here\ncreate function f() returns int language plpgsql as $$ begin return 1; end $$;\ninsert into t values ('it''s; fine');";
+  assert.deepEqual(splitSql(sql), [
+    "create table t (a text default 'x;y')",
+    'create function f() returns int language plpgsql as $$ begin return 1; end $$',
+    "insert into t values ('it''s; fine')",
+  ]);
+});

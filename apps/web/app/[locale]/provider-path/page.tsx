@@ -1,5 +1,5 @@
 import { getMessages, fmt } from '@/lib/i18n';
-import { getSupabase } from '@/lib/supabase';
+import { getDb } from '@/lib/db';
 import { evaluate, parseAnswers } from '@/lib/eligibility';
 
 export const dynamic = 'force-dynamic';
@@ -38,10 +38,12 @@ export default async function ProviderPathPage({
 
   let steps: Step[] = [];
   if (result?.permitType) {
-    const db = getSupabase();
+    const db = await getDb();
     if (db) {
-      const { data } = await db.from('pathway_steps').select('*').eq('permit_type', result.permitType).order('step_order');
-      steps = (data ?? []) as Step[];
+      steps = await db.json<Step>(
+        `select to_jsonb(s)::text as j from pathway_steps s where s.permit_type = :permit order by s.step_order`,
+        { permit: result.permitType },
+      );
     }
   }
 
