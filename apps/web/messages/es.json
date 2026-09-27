@@ -4,7 +4,8 @@
   "tagline": "Encuentre cuidado infantil con licencia al que pueda llegar.",
   "nav": {
     "find": "Buscar cuidado",
-    "provide": "Abrir una guardería en casa"
+    "provide": "Abrir una guardería en casa",
+    "need": "Necesidad por código postal"
   },
   "search": {
     "zip": "Código postal",
@@ -41,7 +42,7 @@
   "disclaimer": "La información viene de los datos públicos de licencias de HHSC de Texas. Cuida HOU no recomienda ni respalda a ningún proveedor. Visite y verifique antes de inscribir a su hijo.",
   "path": {
     "title": "Abra una guardería en casa con licencia",
-    "intro": "Una guía paso a paso sobre los permisos de Texas para el cuidado infantil en casa. Cada paso enlaza a la fuente oficial.",
+    "intro": "Averigüe qué permiso de Texas le conviene y luego siga los pasos. Cada paso enlaza a la fuente oficial.",
     "unverified": "Aún no verificado. Consulte la fuente oficial.",
     "verified": "Verificado el {date}",
     "source": "Fuente oficial",
@@ -55,5 +56,62 @@
     "Fri": "vie",
     "Sat": "sáb",
     "Sun": "dom"
+  },
+  "quiz": {
+    "title": "¿Qué permiso necesita?",
+    "intro": "Responda cuatro preguntas. Esto sigue la ley de Texas (Código de Recursos Humanos, Capítulo 42). HHSC toma la decisión final.",
+    "location": "¿Dónde cuidará a los niños?",
+    "locHome": "En mi propia casa",
+    "locOther": "En otro edificio",
+    "unrelated": "Al mismo tiempo, ¿cuántos niños que no son sus parientes?",
+    "c0": "Ninguno, solo mis parientes",
+    "c13": "1 a 3",
+    "c46": "4 a 6",
+    "c712": "7 a 12",
+    "c13p": "13 o más",
+    "paid": "¿Le van a pagar?",
+    "yes": "Sí",
+    "no": "No",
+    "deed": "¿Las restricciones de escritura de su vecindario prohíben negocios en casa?",
+    "deedNo": "No, ya revisé",
+    "deedYes": "Sí",
+    "deedUnsure": "No sé",
+    "submit": "Ver mi resultado",
+    "again": "Cambiar respuestas",
+    "outcomes": {
+      "related_only": "Cuidar solo a sus propios parientes no necesita permiso de HHSC.",
+      "unpaid_small": "Texas exige la inscripción en lista cuando le pagan por cuidar a 3 niños o menos que no son parientes. Si no le van a pagar, puede que no necesite permiso. Confírmelo con HHSC.",
+      "listed": "Probablemente necesita un hogar familiar en lista. Los pasos están abajo.",
+      "registered": "Probablemente necesita un hogar registrado de cuidado infantil. Los pasos están abajo.",
+      "licensed_home": "Probablemente necesita un hogar de cuidado infantil con licencia (la ley estatal lo llama hogar de cuidado grupal). Los pasos están abajo.",
+      "center": "Cuidar a 7 o más niños fuera de su casa es una guardería (centro), que necesita licencia de centro. Esta guía solo cubre guarderías en casa.",
+      "too_many_for_home": "Los permisos de Texas para el hogar permiten un máximo de 12 niños a la vez. Para más, necesitaría licencia de guardería (centro).",
+      "center_small": "La ley estatal define una guardería (centro) como 7 o más niños fuera de casa. Para menos niños en otro edificio, pregunte a HHSC qué permiso aplica."
+    },
+    "deedBlocker": "Deténgase primero: si las restricciones de su escritura prohíben negocios en casa, podrían obligarla a cerrar aunque tenga permiso del estado. Hable con su asociación cívica o con un abogado antes de gastar dinero.",
+    "deedCheck": "Revise las restricciones de su escritura antes de gastar dinero. Houston no tiene zonificación, pero las restricciones de escritura pueden prohibir legalmente los negocios en casa.",
+    "law": "Base legal"
+  },
+  "need": {
+    "title": "Dónde Houston necesita más cuidado infantil",
+    "intro": "Cupos con licencia comparados con niños pequeños cuyos padres trabajan, por área de código postal en el condado de Harris.",
+    "deserts": "{n} de {total} áreas de código postal son desiertos de cuidado infantil",
+    "desertDef": "Un desierto de cuidado infantil tiene más de 3 niños menores de 6 años con padres que trabajan por cada cupo con licencia (menos de 33.3 cupos por cada 100 niños).",
+    "zip": "Código",
+    "kids": "Niños menores de 6, padres que trabajan",
+    "seats": "Cupos con licencia",
+    "per100": "Cupos por cada 100 niños",
+    "hisp": "Hispanos",
+    "black": "Afroamericanos",
+    "desert": "Desierto",
+    "multi": "Cruza el límite del condado: parte de esta área está fuera del condado de Harris.",
+    "afro": "Residentes afrolatinos (hispanos y afroamericanos) en estas áreas: unos {n}, margen de error ±{moe}.",
+    "method": "Cómo se calcula",
+    "m1": "Cupos con licencia: capacidad total con licencia de centros y hogares activos en los datos de licencias de HHSC de Texas. La capacidad no es lo mismo que cupos disponibles e incluye cupos de edad escolar.",
+    "m2": "Niños: tabla B23008 de la Encuesta sobre la Comunidad Estadounidense del Censo, niños menores de 6 años que viven con padres que trabajan o buscan trabajo.",
+    "m3": "Las áreas son Áreas de Tabulación de Códigos Postales del Censo, muy parecidas pero no idénticas a los códigos postales.",
+    "m4": "Children at Risk usa la misma definición de 3 a 1. Su método puede variar en detalles, así que su lista y la nuestra pueden no coincidir.",
+    "vintage": "Datos del Censo: {v}. Actualizado el {d}.",
+    "empty": "Los datos aún no están cargados. Primero ejecute el proceso de datos."
   }
 }

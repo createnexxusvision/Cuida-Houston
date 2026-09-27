@@ -28,6 +28,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
             <nav className="links" aria-label="Main">
               <Link href={`/${locale}`}>{t.nav.find}</Link>
               <Link href={`/${locale}/provider-path`}>{t.nav.provide}</Link>
+              <Link href={`/${locale}/need`}>{t.nav.need}</Link>
               <Link href={`/${other}`} hrefLang={other} lang={other}>{t.otherLang}</Link>
             </nav>
           </header>

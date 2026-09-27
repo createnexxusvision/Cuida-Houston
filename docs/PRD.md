@@ -38,9 +38,9 @@ Booking or payments · rating or recommending providers · processing subsidy ap
 | F2 | Full EN/ES parity, Spanish default | P0 | ✅ UI strings; Spanish needs native review |
 | F3 | Nearest METRO routes per result | P0 | ✅ via `transit_stops` (load GTFS) |
 | F4 | State inspection summary + official link | P0 | ✅ counts shown; confirm deep-link format |
-| F5 | Need map by ZIP with method shown | P0 | ◐ data computed in `zcta_need`; page not built |
-| F6 | Provider eligibility quiz + deed-restriction warning | P0 | ◐ deed step in pathway; quiz not built |
-| F7 | Bilingual, source-linked licensing checklist | P0 | ◐ `/provider-path` renders seed; 4 of 7 registered-home steps verified |
+| F5 | Need map by ZIP with method shown | P0 | ✅ `/[locale]/need` (ranked table with desert bars) |
+| F6 | Provider eligibility quiz + deed-restriction warning | P0 | ✅ `/[locale]/provider-path` quiz, tested |
+| F7 | Bilingual, source-linked licensing checklist | P0 | ◐ listed, registered and licensed-home paths; 9 of 12 steps verified |
 | F8 | Consent-based provider interest form | P1 | Schema only (`provider_leads`) |
 | F9 | Open-seat data (TWC / partner / self-report) | P1 | Schema only (`seat_reports`) |
 | F10 | SMS / WhatsApp search | P1 | — |

@@ -42,7 +42,7 @@ npx supabase init            # first time only: creates supabase/config.toml, ke
 npx supabase start           # or create a project at supabase.com
 npx supabase db reset        # applies supabase/migrations + supabase/seed.sql
 
-npm test                     # pipeline unit tests (no network)
+npm test                     # pipeline + quiz unit tests (no network)
 npm run etl:dry-run          # pulls live HHSC + Census data, prints the need ranking, writes nothing
 npm run etl:sync             # writes providers + zcta_need to the database
 npm run dev                  # http://localhost:3000 -> redirects to /es or /en

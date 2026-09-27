@@ -4,7 +4,8 @@
   "tagline": "Find licensed childcare you can get to.",
   "nav": {
     "find": "Find care",
-    "provide": "Open a home daycare"
+    "provide": "Open a home daycare",
+    "need": "Need by ZIP"
   },
   "search": {
     "zip": "ZIP code",
@@ -41,7 +42,7 @@
   "disclaimer": "Listings come from Texas HHSC public licensing data. Cuida HOU does not recommend or endorse any provider. Visit and check before enrolling.",
   "path": {
     "title": "Open a licensed home daycare",
-    "intro": "A step-by-step guide to Texas permits for home-based childcare. Every step links to the official source.",
+    "intro": "Find out which Texas permit fits your plans, then follow the steps. Every step links to the official source.",
     "unverified": "Not yet verified. Check the official source.",
     "verified": "Verified {date}",
     "source": "Official source",
@@ -55,5 +56,62 @@
     "Fri": "Fri",
     "Sat": "Sat",
     "Sun": "Sun"
+  },
+  "quiz": {
+    "title": "Which permit do you need?",
+    "intro": "Answer four questions. This follows Texas law (Human Resources Code, Chapter 42). HHSC makes the final decision.",
+    "location": "Where will you care for children?",
+    "locHome": "In my own home",
+    "locOther": "In another building",
+    "unrelated": "At the same time, how many children who are not related to you?",
+    "c0": "None, only my relatives",
+    "c13": "1 to 3",
+    "c46": "4 to 6",
+    "c712": "7 to 12",
+    "c13p": "13 or more",
+    "paid": "Will you be paid?",
+    "yes": "Yes",
+    "no": "No",
+    "deed": "Do your neighborhood's deed restrictions ban home businesses?",
+    "deedNo": "No, I checked",
+    "deedYes": "Yes",
+    "deedUnsure": "I don't know",
+    "submit": "See my result",
+    "again": "Change answers",
+    "outcomes": {
+      "related_only": "Caring only for your own relatives does not need a permit from HHSC.",
+      "unpaid_small": "Texas requires listing when you are paid to care for 3 or fewer unrelated children. If you won't be paid, you may not need a permit. Confirm with HHSC.",
+      "listed": "You likely need a listed family home. Steps are below.",
+      "registered": "You likely need a registered child-care home. Steps are below.",
+      "licensed_home": "You likely need a licensed child-care home (called a group day-care home in state law). Steps are below.",
+      "center": "Care for 7 or more children away from your home is a day-care center, which needs a center license. This guide covers home daycares only.",
+      "too_many_for_home": "Texas home permits allow no more than 12 children at a time. For more, you would need a day-care center license.",
+      "center_small": "State law defines a day-care center as 7 or more children away from home. For fewer children in another building, ask HHSC which permit applies."
+    },
+    "deedBlocker": "Stop here first: if your deed restrictions ban home businesses, you could be forced to close even after you get a state permit. Talk to your civic club or a lawyer before spending money.",
+    "deedCheck": "Check your deed restrictions before you spend money. Houston has no zoning, but deed restrictions can legally ban home businesses.",
+    "law": "Legal basis"
+  },
+  "need": {
+    "title": "Where Houston needs more childcare",
+    "intro": "Licensed seats compared with young children whose parents all work, by ZIP code area in Harris County.",
+    "deserts": "{n} of {total} ZIP areas are childcare deserts",
+    "desertDef": "A childcare desert has more than 3 children under 6 with working parents for every licensed seat (fewer than 33.3 seats per 100 children).",
+    "zip": "ZIP",
+    "kids": "Children under 6, working parents",
+    "seats": "Licensed seats",
+    "per100": "Seats per 100 children",
+    "hisp": "Hispanic",
+    "black": "Black",
+    "desert": "Desert",
+    "multi": "Crosses a county line: part of this area is outside Harris County.",
+    "afro": "Afro-Latino residents (Hispanic and Black) in these areas: about {n}, margin of error ±{moe}.",
+    "method": "How this is calculated",
+    "m1": "Licensed seats: total licensed capacity of active centers and homes in Texas HHSC licensing data. Capacity is not the same as open seats, and it includes school-age seats.",
+    "m2": "Children: Census American Community Survey table B23008, children under 6 living with parents who are all in the labor force.",
+    "m3": "ZIP areas are Census ZIP Code Tabulation Areas, which closely match but are not identical to postal ZIP codes.",
+    "m4": "Children at Risk uses the same 3-to-1 definition. Their method may differ in details, so their list and ours may not match exactly.",
+    "vintage": "Census data: {v}. Updated {d}.",
+    "empty": "Need data is not loaded yet. Run the data pipeline first."
   }
 }

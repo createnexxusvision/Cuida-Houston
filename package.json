@@ -2,13 +2,18 @@
   "name": "cuida-hou",
   "private": true,
   "description": "Bilingual two-sided childcare network for Houston (Impact Hub Houston hackathon 2026)",
-  "workspaces": ["apps/web", "services/etl"],
-  "engines": { "node": ">=22" },
+  "workspaces": [
+    "apps/web",
+    "services/etl"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "npm run dev -w @cuida-hou/web",
     "build": "npm run build -w @cuida-hou/web",
     "typecheck": "npm run typecheck -w @cuida-hou/web",
-    "test": "npm test -w @cuida-hou/etl",
+    "test": "npm test -w @cuida-hou/etl && npm test -w @cuida-hou/web",
     "etl:dry-run": "npm run dry-run -w @cuida-hou/etl",
     "etl:sync": "npm run sync -w @cuida-hou/etl"
   }

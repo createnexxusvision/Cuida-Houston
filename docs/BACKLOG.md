@@ -14,9 +14,9 @@ Suggested GitHub issues. Labels: `blocker`, `P0`, `P1`, `P2`, `data`, `content`,
 - [x] Replace `HARRIS_PREFIXES` with a county–ZCTA crosswalk `data`
 - [x] Verify ACS variable IDs for the chosen year `data` (2023 and 2024 5-year, verified 2026-09-26)
 - [ ] Load METRO GTFS and Gazetteer centroids `data`
-- [ ] Need page (F5) with method and ACS vintage `P0`
-- [ ] Eligibility quiz (F6) `P0`
-- [ ] Verify pathway steps 4, 5, 7 and licensed-home step 1 against HHSC/TWC `content`
+- [x] Need page (F5) with method and ACS vintage `P0` (`/[locale]/need`)
+- [x] Eligibility quiz (F6) `P0` (`/[locale]/provider-path`, based on Texas HRC §42.002 and §42.052)
+- [ ] Verify remaining pathway steps: registered 4 and 5, listed 3 (HHSC pages blocked from build env; 9 of 12 verified) `content`
 - [ ] Native-speaker review of all Spanish strings and seed content `content`
 - [ ] Confirm HHSC public-record deep link for each operation `P0`
 - [ ] Deploy Amplify + SAM; AWS Budgets alarm `infra`
