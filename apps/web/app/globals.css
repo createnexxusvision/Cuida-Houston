@@ -1,0 +1,29 @@
+:root {
+  --ink: #1b2238; --ink-2: #4a5270; --paper: #f4f5f9; --card: #ffffff; --line: #d9dce6;
+  --teal: #17756e; --gold: #c98a0b; --warn: #b3261e;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --ink: #e9ebf2; --ink-2: #b4b9cb; --paper: #0f1320; --card: #171c2c; --line: #2c3350; --teal: #4db8ae; --gold: #f2b634; --warn: #f08a82; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); line-height: 1.5; }
+.wrap { max-width: 880px; margin: 0 auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; }
+header.top h1 { margin: 0; font-size: 28px; }
+nav.links { display: flex; gap: 14px; flex-wrap: wrap; }
+a { color: var(--teal); }
+form.search { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; align-items: end; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: var(--ink-2); }
+label.check { flex-direction: row; align-items: center; gap: 8px; }
+input, select, button { font: inherit; padding: 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); color: var(--ink); min-height: 44px; }
+button { background: var(--teal); color: #fff; border: 0; cursor: pointer; font-weight: 600; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.note { font-size: 14px; color: var(--ink-2); }
+.warn { color: var(--warn); }
+ul.results { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.card h2 { margin: 0; font-size: 18px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; color: var(--ink-2); }
+ol.steps { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 14px; }
+footer { font-size: 13px; color: var(--ink-2); border-top: 1px solid var(--line); padding-top: 12px; }

@@ -1,0 +1,23 @@
+version: 1
+applications:
+  - appRoot: apps/web
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - nvm use 22 || true
+            # npm workspaces: install from the repo root (single lockfile), then return to apps/web
+            - cd ../.. && npm ci && cd apps/web
+        build:
+          commands:
+            # Amplify does not pass console env vars to the SSR runtime; write the public-safe ones for Next.js.
+            - env | grep -E '^(SUPABASE_URL|SUPABASE_ANON_KEY)=' >> .env.production
+            - npm run build
+      artifacts:
+        baseDirectory: .next
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - .next/cache/**/*

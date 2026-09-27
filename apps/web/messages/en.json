@@ -1,0 +1,59 @@
+{
+  "lang": "English",
+  "otherLang": "Español",
+  "tagline": "Find licensed childcare you can get to.",
+  "nav": {
+    "find": "Find care",
+    "provide": "Open a home daycare"
+  },
+  "search": {
+    "zip": "ZIP code",
+    "age": "Child's age",
+    "ageAny": "Any age",
+    "ages": {
+      "Infant": "Infant",
+      "Toddler": "Toddler",
+      "Pre-Kindergarten": "Pre-K",
+      "School": "School age"
+    },
+    "opensBy": "Opens by",
+    "subsidy": "Accepts childcare subsidy",
+    "submit": "Search",
+    "results": "{n} licensed programs",
+    "none": "No licensed programs match. Try another ZIP or fewer filters.",
+    "capacityNote": "Numbers show licensed capacity, not open seats. Call to ask about openings.",
+    "notConfigured": "Search is not connected to a database yet. Set SUPABASE_URL and SUPABASE_ANON_KEY."
+  },
+  "result": {
+    "center": "Center",
+    "home": "Home daycare",
+    "approx": "Approximate location (home daycare)",
+    "capacity": "Licensed for {n} children",
+    "hours": "Hours",
+    "subsidyYes": "Accepts subsidy",
+    "routes": "Bus routes nearby",
+    "inspections": "State inspection record",
+    "highDef": "{n} high-weight deficiencies on record",
+    "action": "Under state corrective or adverse action",
+    "away": "{km} km away",
+    "call": "Call"
+  },
+  "disclaimer": "Listings come from Texas HHSC public licensing data. Cuida HOU does not recommend or endorse any provider. Visit and check before enrolling.",
+  "path": {
+    "title": "Open a licensed home daycare",
+    "intro": "A step-by-step guide to Texas permits for home-based childcare. Every step links to the official source.",
+    "unverified": "Not yet verified. Check the official source.",
+    "verified": "Verified {date}",
+    "source": "Official source",
+    "empty": "Pathway steps are not loaded yet."
+  },
+  "days": {
+    "Mon": "Mon",
+    "Tue": "Tue",
+    "Wed": "Wed",
+    "Thu": "Thu",
+    "Fri": "Fri",
+    "Sat": "Sat",
+    "Sun": "Sun"
+  }
+}

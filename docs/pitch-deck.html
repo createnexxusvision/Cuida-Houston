@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"></head>
+<body>
+<title>Cuida HOU</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ink:#1B2238; --ink-2:#4A5270; --ink-3:#7A8199;
+  --paper:#EEF0F5; --slide:#FFFFFF; --line:#D9DCE6;
+  --gold:#E8A317; --gold-soft:#FBEFD2; --gold-ink:#7A5200;
+  --teal:#17756E; --teal-soft:#DCEFEC; --teal-ink:#0C4A45;
+  --flag:#B3261E;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Public Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ink:#E9EBF2; --ink-2:#B4B9CB; --ink-3:#8A90A6;
+    --paper:#0F1320; --slide:#181D2E; --line:#2C3350;
+    --gold:#F2B634; --gold-soft:#3A2F14; --gold-ink:#F7D489;
+    --teal:#4DB8AE; --teal-soft:#15312F; --teal-ink:#A6E3DC;
+    --flag:#F08A82;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ink:#E9EBF2; --ink-2:#B4B9CB; --ink-3:#8A90A6;
+  --paper:#0F1320; --slide:#181D2E; --line:#2C3350;
+  --gold:#F2B634; --gold-soft:#3A2F14; --gold-ink:#F7D489;
+  --teal:#4DB8AE; --teal-soft:#15312F; --teal-ink:#A6E3DC;
+  --flag:#F08A82;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;padding-inline:16px;padding-block:24px 96px}
+.deck{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.slide{background:var(--slide);border:1px solid var(--line);border-radius:6px;padding:clamp(22px,4vw,56px);display:flex;flex-direction:column;gap:22px;scroll-margin-top:16px;position:relative}
+@media (min-width:900px){.slide{aspect-ratio:16/9}}
+.meta{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.meta .sec{color:var(--teal)}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(44px,7vw,92px);line-height:.95;font-weight:800}
+h2{font-size:clamp(28px,3.6vw,46px);line-height:1.05;font-weight:700;max-width:22ch}
+h3{font-size:clamp(18px,1.8vw,22px);font-weight:700;line-height:1.2}
+.es{display:block;font-family:var(--body);font-style:italic;font-weight:400;font-size:.46em;letter-spacing:0;color:var(--ink-2);margin-top:.5em}
+p{margin:0;max-width:65ch}
+.lead{font-size:clamp(17px,1.7vw,21px);color:var(--ink-2);max-width:52ch}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.stat{display:flex;flex-direction:column;gap:6px;border-top:3px solid var(--gold);padding-top:12px}
+.stat .n{font-family:var(--display);font-weight:800;font-size:clamp(36px,4.4vw,58px);line-height:1;font-variant-numeric:tabular-nums}
+.stat .l{font-size:14px;color:var(--ink-2)}
+.src{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.02em}
+.side{border:1px solid var(--line);border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.side.parent{background:var(--teal-soft);border-color:transparent}
+.side.parent h3,.side.parent .tag{color:var(--teal-ink)}
+.side.provider{background:var(--gold-soft);border-color:transparent}
+.side.provider h3,.side.provider .tag{color:var(--gold-ink)}
+.tag{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px}
+li{max-width:60ch}
+.bars{display:flex;flex-direction:column;gap:12px}
+.bar{display:grid;grid-template-columns:minmax(120px,190px) 1fr 56px;align-items:center;gap:12px;font-size:14px}
+.track{height:22px;background:var(--paper);border-radius:3px;overflow:hidden}
+.fill{height:100%;background:var(--ink-3)}
+.fill.hi{background:var(--gold)}
+.bar .v{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.stack{display:flex;height:34px;border-radius:3px;overflow:hidden;gap:2px}
+.stack span{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--ink-2)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:0}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;counter-reset:s}
+.step{display:flex;flex-direction:column;gap:8px}
+.step .k{font-family:var(--mono);font-size:12px;color:var(--teal);letter-spacing:.08em;text-transform:uppercase}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:640px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3)}
+.pill{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.pill.ok{background:var(--teal-soft);color:var(--teal-ink)}
+.pill.chk{background:var(--gold-soft);color:var(--gold-ink)}
+.sdg{display:flex;flex-direction:column;gap:6px;padding:16px;border:1px solid var(--line);border-radius:6px}
+.sdg .num{font-family:var(--display);font-weight:800;font-size:34px;line-height:1;color:var(--teal)}
+.todo{color:var(--flag);font-family:var(--mono);font-size:13px}
+.timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;border-top:2px solid var(--ink)}
+.tl{padding:14px 16px 0 0;display:flex;flex-direction:column;gap:6px;position:relative}
+.tl::before{content:"";position:absolute;top:-7px;left:0;width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid var(--slide)}
+.tl .d{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);padding-top:8px}
+.title-slide{justify-content:space-between;background:var(--ink);color:var(--slide);border-color:var(--ink)}
+.title-slide .meta{color:color-mix(in srgb,var(--slide) 60%,var(--ink))}
+.title-slide .meta .sec{color:var(--gold)}
+.title-slide .lead{color:color-mix(in srgb,var(--slide) 80%,var(--ink))}
+.title-slide h1 .es{color:var(--gold)}
+.title-slide .dot{color:var(--gold)}
+.foot{font-size:13px;color:var(--ink-3);margin-top:auto}
+.nav{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;align-items:center;background:var(--slide);border:1px solid var(--line);border-radius:99px;padding:6px 8px 6px 14px;font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+.nav button{font:inherit;background:var(--ink);color:var(--slide);border:0;border-radius:99px;width:32px;height:32px;cursor:pointer}
+.nav button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+a{color:var(--teal)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<main class="deck" id="deck">
+
+<!-- 1 -->
+<section class="slide title-slide" id="s1">
+  <div class="meta"><span class="sec">Houston Hackathon 2026 · Impact Hub Houston</span><span>SDG 5 · 8 · 10 · 11</span></div>
+  <div style="display:flex;flex-direction:column;gap:20px">
+    <h1>Cuida HOU<span class="dot">.</span><span class="es">Una red de cuidado infantil para Houston</span></h1>
+    <p class="lead">A bilingual childcare network with two sides. Parents find licensed care they can reach. Women in childcare deserts get a guided path to open licensed home daycares.</p>
+  </div>
+  <div class="meta" style="text-transform:none;letter-spacing:.02em"><span>Team: Danny Arzu · <span class="todo" style="color:var(--gold)">[add teammates]</span></span><span>Hispanic Heritage Month · Sept 2026</span></div>
+</section>
+
+<!-- 2 -->
+<section class="slide" id="s2">
+  <div class="meta"><span class="sec">The problem</span><span>02</span></div>
+  <h2>Houston parents can't work if they can't find care.<span class="es">Sin cuidado infantil, no se puede trabajar.</span></h2>
+  <div class="grid3">
+    <div class="stat"><span class="n">44</span><span class="l">Greater Houston ZIP codes are childcare deserts. 28 of them are chronic (3+ years running).</span><span class="src">Children at Risk, Apr 2026</span></div>
+    <div class="stat"><span class="n">~30,000</span><span class="l">families on the subsidized-care waitlist in the 13-county Gulf Coast region.</span><span class="src">Workforce Solutions via Houston Chronicle, Apr 2025</span></div>
+    <div class="stat"><span class="n">14 mo</span><span class="l">average wait for that subsidized care.</span><span class="src">Workforce Solutions via Houston Chronicle, Apr 2025</span></div>
+  </div>
+  <p>A desert is a ZIP code with more than three young children of working parents for every licensed seat. Harris County ZIPs 77093 and 77506 have 0 to 5 seats per 100 children.</p>
+  <p class="foot">Children at Risk reports that parents, and mothers especially, are leaving the workforce when they can't find care.</p>
+</section>
+
+<!-- 3 -->
+<section class="slide" id="s3">
+  <div class="meta"><span class="sec">The problem · who it hits</span><span>03</span></div>
+  <h2>The burden falls on women, in a city that is two-thirds Black and Latino.<span class="es">La carga cae sobre las mujeres.</span></h2>
+  <div class="grid2">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <h3>Labor force participation, Houston, age 16+</h3>
+      <div class="bars" role="img" aria-label="All residents 67.0 percent, women 60.4 percent">
+        <div class="bar"><span>All residents</span><div class="track"><div class="fill" style="width:67%"></div></div><span class="v">67.0%</span></div>
+        <div class="bar"><span>Women</span><div class="track"><div class="fill hi" style="width:60.4%"></div></div><span class="v">60.4%</span></div>
+      </div>
+      <span class="src">U.S. Census QuickFacts, ACS 2019–2023 · scale 0–100%</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <h3>Who lives in Houston</h3>
+      <div class="stack" role="img" aria-label="Hispanic 44.2, White 23.2, Black 22.3, Asian 6.9, other 3.4 percent">
+        <span style="width:44.2%;background:var(--gold)"></span>
+        <span style="width:22.3%;background:var(--teal)"></span>
+        <span style="width:23.2%;background:var(--ink-3)"></span>
+        <span style="width:6.9%;background:var(--line)"></span>
+        <span style="width:3.4%;background:var(--paper)"></span>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--gold)"></i>Hispanic 44.2%</span>
+        <span><i style="background:var(--teal)"></i>Black 22.3%</span>
+        <span><i style="background:var(--ink-3)"></i>White 23.2%</span>
+        <span><i style="background:var(--line)"></i>Asian 6.9%</span>
+        <span><i style="background:var(--paper);outline:1px solid var(--line)"></i>Other 3.4%</span>
+      </div>
+      <span class="src">ACS 2020–2024, via Census-derived summaries · verify against QuickFacts</span>
+    </div>
+  </div>
+  <p class="foot">Women are 46% of the Texas workforce, and the Texas Women's Foundation names childcare as a barrier that is getting worse (June 2026).</p>
+</section>
+
+<!-- 4 -->
+<section class="slide" id="s4">
+  <div class="meta"><span class="sec">Why it hasn't been solved</span><span>04</span></div>
+  <h2>The data exists. The seats don't, and the path to more seats is hidden.<span class="es">Los datos existen. Los cupos, no.</span></h2>
+  <div class="grid3">
+    <div class="side"><h3>Search tools stop at search</h3><p>The state's Texas Child Care Availability Portal already shows open seats by age. It can't add seats where there are none, and it doesn't plan around a parent's bus route or shift.</p></div>
+    <div class="side"><h3>Supply is the real gap</h3><p>A waitlist of about 30,000 families means finding care is not enough. Houston needs more licensed providers inside the desert ZIP codes.</p></div>
+    <div class="side"><h3>The licensing path is hard to see</h3><p>Opening a home daycare means state minimum standards, inspections and forms. The women best placed to do it often don't know it's an option, or where to start in their language.</p></div>
+  </div>
+  <p class="foot">Still to check before the pitch: how fully the state portal works in Spanish, and what share of current home providers are Black or Latina women.</p>
+</section>
+
+<!-- 5 -->
+<section class="slide" id="s5">
+  <div class="meta"><span class="sec">The solution</span><span>05</span></div>
+  <h2>One network, two doors.<span class="es">Una red, dos puertas.</span></h2>
+  <div class="grid2">
+    <div class="side parent">
+      <span class="tag">Door 1 · Para familias</span>
+      <h3>Find care you can actually get to</h3>
+      <ul>
+        <li>Search licensed centers and homes by ZIP, child's age and shift hours</li>
+        <li>Filter for subsidy acceptance and Spanish-speaking staff</li>
+        <li>See which options sit on your METRO route to work</li>
+        <li>View each provider's state inspection history</li>
+      </ul>
+    </div>
+    <div class="side provider">
+      <span class="tag">Door 2 · Para proveedoras</span>
+      <h3>Open a licensed home daycare</h3>
+      <ul>
+        <li>Pick the right permit, starting with a registered home (up to 12 children, 6 unrelated during school hours)</li>
+        <li>Follow a bilingual, step-by-step checklist to state approval</li>
+        <li>See where your ZIP ranks for unmet demand</li>
+        <li>Get connected to local support partners and the families waiting nearby</li>
+      </ul>
+    </div>
+  </div>
+  <p class="foot">Each new provider in a desert ZIP adds seats for working parents and creates a woman-owned small business.</p>
+</section>
+
+<!-- 6 -->
+<section class="slide" id="s6">
+  <div class="meta"><span class="sec">The solution · how it works</span><span>06</span></div>
+  <h2>How it works</h2>
+  <div class="steps">
+    <div class="step"><span class="k">Step 1 · Map the gap</span><h3>Combine open data by ZIP</h3><p>Merge state licensing records with Census counts of young children, working mothers and language spoken at home. Rank every Houston ZIP by unmet need.</p></div>
+    <div class="step"><span class="k">Step 2 · Match families</span><h3>Search in English or Spanish</h3><p>Parents search by age, hours, subsidy status and transit. The tool shows the nearest real options, with links to inspection records.</p></div>
+    <div class="step"><span class="k">Step 3 · Grow supply</span><h3>Guide new providers</h3><p>In the ZIPs with the biggest gap, the provider path walks women through licensing and hands them off to partners who train and support providers.</p></div>
+  </div>
+  <p class="foot">Prototype stack: Next.js on AWS Amplify + Supabase (Postgres), with nightly AWS Lambda pulls from the state licensing API.</p>
+</section>
+
+<!-- 7 -->
+<section class="slide" id="s7">
+  <div class="meta"><span class="sec">The solution · open data</span><span>07</span></div>
+  <h2>Built on public data anyone can check.<span class="es">Datos públicos y verificables.</span></h2>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Source</th><th>What it gives us</th><th>Access</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Texas HHSC Child Care Licensing (data.texas.gov, <code>bc5r-88dy</code>)</td><td>Every licensed center and home: type, address, capacity; links to inspections and violations</td><td>Socrata API / OData</td><td><span class="pill ok">Verified · updated Sept 15, 2026</span></td></tr>
+      <tr><td>TWC Texas Child Care Availability Portal</td><td>Open seats by age; subsidy providers</td><td>Public web tool</td><td><span class="pill chk">Check API or data-sharing access</span></td></tr>
+      <tr><td>Children at Risk Child Care Desert Map</td><td>Desert and chronic-desert ZIP codes</td><td>Interactive map</td><td><span class="pill chk">Request underlying data</span></td></tr>
+      <tr><td>U.S. Census ACS API</td><td>Children under 6, working mothers, language at home, Hispanic and Black residents (incl. Afro-Latino, table B03002)</td><td>Free API key</td><td><span class="pill ok">Verified</span></td></tr>
+      <tr><td>City of Houston Open Data</td><td>City race and ethnicity tables (ACS B03002)</td><td>Download</td><td><span class="pill ok">Verified</span></td></tr>
+      <tr><td>METRO Houston schedules (GTFS)</td><td>Bus and rail stops and routes for commute matching</td><td>GTFS feed · Transitland mirror</td><td><span class="pill ok">Verified</span></td></tr>
+      <tr><td>CDC Social Vulnerability Index</td><td>Neighborhood vulnerability for prioritizing outreach</td><td>Download</td><td><span class="pill ok">Verified</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="slide" id="s8">
+  <div class="meta"><span class="sec">Sustain and grow</span><span>08</span></div>
+  <h2>How we keep it going</h2>
+  <div class="grid3">
+    <div class="side"><h3>Cost to run</h3><p>The prototype runs on free tiers of existing tools. A pilot needs hosting, Spanish-language content review and one part-time community coordinator.</p><p class="todo">[Team to set pilot budget]</p></div>
+    <div class="side"><h3>What keeps data fresh</h3><p>Licensing data refreshes automatically from the state API. New providers and partners report seat openings, so the network doesn't depend on one person's spreadsheet.</p></div>
+    <div class="side"><h3>How we track progress</h3>
+      <ul>
+        <li>Early: searches, referrals, provider sign-ups, licenses in progress</li>
+        <li>Later: new licensed seats in desert ZIPs, mothers placed in care and back at work</li>
+      </ul>
+    </div>
+  </div>
+  <p class="foot">Results go to partners and the City through a live public dashboard, not an annual report.</p>
+</section>
+
+<!-- 9 -->
+<section class="slide" id="s9">
+  <div class="meta"><span class="sec">The impact</span><span>09</span></div>
+  <h2>If it works, the waitlist shrinks where it's longest.<span class="es">Más cupos donde más se necesitan.</span></h2>
+  <div class="grid4">
+    <div class="sdg"><span class="num">5</span><h3>Gender equality</h3><p>Reduces the care burden that keeps women out of work.</p></div>
+    <div class="sdg"><span class="num">8</span><h3>Decent work</h3><p>Gets mothers back to work and creates women-owned businesses.</p></div>
+    <div class="sdg"><span class="num">10</span><h3>Reduced inequalities</h3><p>Bilingual by design, focused on low-income, Black and Latino neighborhoods.</p></div>
+    <div class="sdg"><span class="num">11</span><h3>Sustainable cities</h3><p>Plans care around where families live and how they get to work.</p></div>
+  </div>
+  <p><strong>Who is helped:</strong> working parents in desert ZIPs, their young children, and the women who become licensed providers. <span class="todo">[Set Year 1 targets with partners]</span></p>
+</section>
+
+<!-- 10 -->
+<section class="slide" id="s10">
+  <div class="meta"><span class="sec">The team</span><span>10</span></div>
+  <h2>Who is building this</h2>
+  <div class="grid2">
+    <div class="side">
+      <h3>Danny Arzu · Founder</h3>
+      <p>Afro-Latino Miami and Honduran roots. More than a decade in high school, college and pro sports. Background in teaching, curriculum design, event production and AI and blockchain development. Founder of NextPlay Nexus and StillSpoke Wellness.</p>
+    </div>
+    <div class="side">
+      <h3>Teammates and advisors</h3>
+      <p class="todo">[Name · role · why they fit]</p>
+      <p class="todo">[Name · role · why they fit]</p>
+      <p>Priority to recruit: a licensed home-care provider, a Spanish-language reviewer, and someone from a Houston childcare partner.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="slide" id="s11">
+  <div class="meta"><span class="sec">The ask</span><span>11</span></div>
+  <h2>What we need to reach a pilot</h2>
+  <div class="timeline">
+    <div class="tl"><span class="d">Sept 2026</span><h3>Hackathon prototype</h3><p>Desert ranking, bilingual search and provider checklist, built on live state data.</p></div>
+    <div class="tl"><span class="d">Oct 2026</span><h3>Validate</h3><p>Interview parents and would-be providers in 2–3 desert ZIPs. Confirm Spanish content.</p></div>
+    <div class="tl"><span class="d">Jan 2027</span><h3>Pilot</h3><p>Launch with one support partner. First provider cohort starts licensing.</p></div>
+    <div class="tl"><span class="d">Mar 2027</span><h3>Report</h3><p>Share seats added and families placed, then decide on scale.</p></div>
+  </div>
+  <div class="grid2">
+    <div><h3>Partners we're asking for</h3><p>City of Houston, Workforce Solutions Gulf Coast, Children at Risk, Collaborative for Children, Impact Hub Houston mentors.</p></div>
+    <div><h3>Funding</h3><p class="todo">[Amount and use of funds, split across platform, outreach and staffing]</p></div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="slide title-slide" id="s12">
+  <div class="meta"><span class="sec">Gracias</span><span>12</span></div>
+  <h1 style="font-size:clamp(40px,6vw,76px)">Thank you<span class="dot">.</span><span class="es">¡Gracias!</span></h1>
+  <p class="lead">Contact: Danny Arzu · <span style="color:var(--gold)">[contact email] · [website]</span></p>
+</section>
+
+<!-- 13 -->
+<section class="slide" id="s13">
+  <div class="meta"><span class="sec">Appendix · sources</span><span>13</span></div>
+  <h2>Sources and confidence</h2>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Claim</th><th>Source · date</th><th>Confidence</th></tr></thead>
+    <tbody>
+      <tr><td>44 desert ZIPs, 28 chronic; 77093 and 77506 at 0–5 seats per 100</td><td><a href="https://communityimpact.com/houston/katy-fulshear/education/2026/05/01/greater-houston-struggling-to-keep-up-with-growing-demand-for-childcare/">Community Impact</a>, citing Children at Risk · May 2026</td><td>High</td></tr>
+      <tr><td>~30,000 families waiting, ~14-month average wait</td><td><a href="https://www.houstonchronicle.com/politics/texas/article/child-care-texas-daycare-crisis-20238491.php">Houston Chronicle</a> · Apr 2025</td><td>Medium · refresh the figure</td></tr>
+      <tr><td>Labor force participation 67.0% all, 60.4% women</td><td><a href="https://www.census.gov/quickfacts/houstoncitytexas">Census QuickFacts</a> · ACS 2019–2023</td><td>High</td></tr>
+      <tr><td>Houston 44.2% Hispanic, 22.3% Black</td><td><a href="https://www.censusdots.com/race/houston-tx-demographics">Census Dots</a> (ACS-derived) · confirm on <a href="https://data.houstontx.gov/dataset/city-of-houston-population-estimates-by-race-and-ethnicity">City Open Data</a></td><td>Medium-high</td></tr>
+      <tr><td>Parents, especially moms, leaving the workforce</td><td><a href="https://www.houstonpublicmedia.org/articles/news/texas/2026/04/24/549991/texas-child-care-deserts/">Houston Public Media / Texas Tribune</a> · Apr 2026 (statewide)</td><td>High</td></tr>
+      <tr><td>Women are 46% of the Texas workforce</td><td><a href="https://www.keranews.org/news/2026-06-24/childcare-desert-report">KERA</a>, Texas Women's Foundation · June 2026</td><td>High</td></tr>
+      <tr><td>Registered home: 6 unrelated children during school hours + 6 school-age after, 12 max</td><td><a href="https://www.hhs.texas.gov/sites/default/files/documents/doing-business-with-hhs/provider-portal/protective-services/ccl/licensed-registered-listed-family-child-care-home.pdf">Texas HHSC provider types</a> · rev. Mar 2026</td><td>High</td></tr>
+      <tr><td>State licensing dataset, updated Sept 15, 2026</td><td><a href="https://data.texas.gov/See-Category-Tile/HHSC-CCL-Daycare-and-Residential-Operations-Data/bc5r-88dy">data.texas.gov</a></td><td>High</td></tr>
+      <tr><td>Availability portal shows seats by age and inspection links</td><td><a href="https://www.twc.texas.gov/programs/child-care/for-parents">Texas Workforce Commission</a></td><td>High</td></tr>
+      <tr><td>METRO schedules published as GTFS</td><td><a href="https://www.transit.land/feeds/f-9vk-metropolitantransitauthorityofharriscounty">Transitland</a></td><td>High</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="foot">Not yet verified: current HISD or Harris County childcare figures past 2025, the share of home providers who are Black or Latina women, and Spanish support in the state portal.</p>
+</section>
+
+</main>
+
+<nav class="nav" aria-label="Slide navigation">
+  <span id="count">1 / 13</span>
+  <button type="button" id="prev" aria-label="Previous slide">↑</button>
+  <button type="button" id="next" aria-label="Next slide">↓</button>
+</nav>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var cur=0, count=document.getElementById('count');
+  function go(i){cur=Math.max(0,Math.min(slides.length-1,i));slides[cur].scrollIntoView({block:'start'});count.textContent=(cur+1)+' / '+slides.length;}
+  document.getElementById('prev').addEventListener('click',function(){go(cur-1)});
+  document.getElementById('next').addEventListener('click',function(){go(cur+1)});
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();go(cur+1)}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1)}
+  });
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){cur=slides.indexOf(en.target);count.textContent=(cur+1)+' / '+slides.length;}})},{threshold:0.5});
+    slides.forEach(function(s){io.observe(s)});
+  }
+})();
+</script>
+
+</body>
+</html>

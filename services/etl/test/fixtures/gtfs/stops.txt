@@ -1,0 +1,4 @@
+﻿stop_id,stop_name,stop_lat,stop_lon,location_type
+S1,"Main @ Elgin",29.7012,-95.3601,0
+S2,Scott St,29.71,-95.35,0
+ST1,Station parent,29.72,-95.36,1

@@ -1,0 +1,59 @@
+{
+  "lang": "Español",
+  "otherLang": "English",
+  "tagline": "Encuentre cuidado infantil con licencia al que pueda llegar.",
+  "nav": {
+    "find": "Buscar cuidado",
+    "provide": "Abrir una guardería en casa"
+  },
+  "search": {
+    "zip": "Código postal",
+    "age": "Edad del niño",
+    "ageAny": "Cualquier edad",
+    "ages": {
+      "Infant": "Bebé",
+      "Toddler": "Niño pequeño",
+      "Pre-Kindergarten": "Prekínder",
+      "School": "Edad escolar"
+    },
+    "opensBy": "Abre antes de",
+    "subsidy": "Acepta ayuda para cuidado infantil",
+    "submit": "Buscar",
+    "results": "{n} programas con licencia",
+    "none": "No hay programas con licencia que coincidan. Pruebe otro código postal o menos filtros.",
+    "capacityNote": "Los números muestran la capacidad con licencia, no los cupos disponibles. Llame para preguntar si hay espacio.",
+    "notConfigured": "La búsqueda aún no está conectada a una base de datos. Configure SUPABASE_URL y SUPABASE_ANON_KEY."
+  },
+  "result": {
+    "center": "Centro",
+    "home": "Guardería en casa",
+    "approx": "Ubicación aproximada (guardería en casa)",
+    "capacity": "Licencia para {n} niños",
+    "hours": "Horario",
+    "subsidyYes": "Acepta ayuda",
+    "routes": "Rutas de autobús cercanas",
+    "inspections": "Registro de inspección del estado",
+    "highDef": "{n} deficiencias de peso alto en el registro",
+    "action": "Bajo acción correctiva o adversa del estado",
+    "away": "a {km} km",
+    "call": "Llamar"
+  },
+  "disclaimer": "La información viene de los datos públicos de licencias de HHSC de Texas. Cuida HOU no recomienda ni respalda a ningún proveedor. Visite y verifique antes de inscribir a su hijo.",
+  "path": {
+    "title": "Abra una guardería en casa con licencia",
+    "intro": "Una guía paso a paso sobre los permisos de Texas para el cuidado infantil en casa. Cada paso enlaza a la fuente oficial.",
+    "unverified": "Aún no verificado. Consulte la fuente oficial.",
+    "verified": "Verificado el {date}",
+    "source": "Fuente oficial",
+    "empty": "Los pasos aún no están cargados."
+  },
+  "days": {
+    "Mon": "lun",
+    "Tue": "mar",
+    "Wed": "mié",
+    "Thu": "jue",
+    "Fri": "vie",
+    "Sat": "sáb",
+    "Sun": "dom"
+  }
+}

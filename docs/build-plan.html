@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"></head>
+<body>
+<title>Cuida HOU Build Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ink:#1B2238; --ink-2:#4A5270; --ink-3:#737A92;
+  --paper:#EEF0F5; --sheet:#FFFFFF; --line:#D9DCE6; --row:#F6F7FA;
+  --gold:#C98A0B; --gold-soft:#FBEFD2; --gold-ink:#6E4A00;
+  --teal:#17756E; --teal-soft:#DCEFEC; --teal-ink:#0C4A45;
+  --red:#B3261E; --red-soft:#FBE3E1; --red-ink:#7A1712;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Public Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ink:#E9EBF2; --ink-2:#B4B9CB; --ink-3:#8A90A6;
+    --paper:#0F1320; --sheet:#171C2C; --line:#2C3350; --row:#1D2336;
+    --gold:#F2B634; --gold-soft:#3A2F14; --gold-ink:#F7D489;
+    --teal:#4DB8AE; --teal-soft:#15312F; --teal-ink:#A6E3DC;
+    --red:#F08A82; --red-soft:#3A1917; --red-ink:#F7C1BC;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ink:#E9EBF2; --ink-2:#B4B9CB; --ink-3:#8A90A6;
+  --paper:#0F1320; --sheet:#171C2C; --line:#2C3350; --row:#1D2336;
+  --gold:#F2B634; --gold-soft:#3A2F14; --gold-ink:#F7D489;
+  --teal:#4DB8AE; --teal-soft:#15312F; --teal-ink:#A6E3DC;
+  --red:#F08A82; --red-soft:#3A1917; --red-ink:#F7C1BC;
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;padding-inline:16px;padding-block:28px 80px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:28px}
+@media (min-width:1000px){.wrap{grid-template-columns:220px minmax(0,1fr)}}
+nav.toc{font-size:14px}
+@media (min-width:1000px){nav.toc{position:sticky;top:calc(20px + env(safe-area-inset-top,0px));align-self:start;max-height:calc(100vh - 40px);overflow:auto}}
+nav.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+nav.toc a{display:block;padding:5px 10px;border-radius:4px;color:var(--ink-2);text-decoration:none}
+nav.toc a:hover{background:var(--sheet);color:var(--ink)}
+nav.toc .grp{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);padding:14px 10px 4px}
+main{display:flex;flex-direction:column;gap:28px;min-width:0}
+section.doc{background:var(--sheet);border:1px solid var(--line);border-radius:6px;padding:clamp(20px,3.5vw,44px);display:flex;flex-direction:column;gap:16px;scroll-margin-top:16px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(34px,5vw,58px);line-height:1;font-weight:800}
+h2{font-size:clamp(24px,2.8vw,34px);line-height:1.1;font-weight:800}
+h3{font-size:19px;font-weight:600;line-height:1.25;margin-top:8px}
+p,li{max-width:70ch}
+p{margin:0}
+ul,ol.list{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+.lead{font-size:18px;color:var(--ink-2)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.kv div{background:var(--row);border-radius:4px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.kv b{font-family:var(--mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:4px}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.45}
+.tbl table{min-width:720px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);background:var(--row);position:sticky;top:0}
+td code,p code,li code{font-family:var(--mono);font-size:.88em;background:var(--row);padding:1px 5px;border-radius:3px}
+.pill{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500;line-height:1.4}
+.p-block{background:var(--red-soft);color:var(--red-ink)}
+.p-high{background:var(--gold-soft);color:var(--gold-ink)}
+.p-med{background:var(--row);color:var(--ink-2);outline:1px solid var(--line)}
+.p-ok{background:var(--teal-soft);color:var(--teal-ink)}
+.callout{border:1px solid var(--line);border-left:4px solid var(--red);border-radius:0;padding:14px 16px;background:var(--red-soft);color:var(--red-ink);display:flex;flex-direction:column;gap:6px}
+.callout.gold{border-left-color:var(--gold);background:var(--gold-soft);color:var(--gold-ink)}
+.callout.teal{border-left-color:var(--teal);background:var(--teal-soft);color:var(--teal-ink)}
+.callout b{font-family:var(--display);font-size:17px}
+.blockers{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.blocker{border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.blocker .id{font-family:var(--mono);font-size:12px;color:var(--red)}
+pre.code{font-family:var(--mono);font-size:13px;line-height:1.5;background:var(--row);border:1px solid var(--line);border-radius:4px;padding:14px;overflow-x:auto;margin:0}
+.mermaid{background:var(--row);border-radius:4px;padding:14px;overflow-x:auto;margin:0}
+a{color:var(--teal)}
+a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.src{font-size:13px;color:var(--ink-3)}
+.phase{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.phase > div{border-top:3px solid var(--teal);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+.phase .d{font-family:var(--mono);font-size:12px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em}
+.num{font-variant-numeric:tabular-nums}
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <ol>
+    <li class="grp">Start here</li>
+    <li><a href="#summary">Summary and verdict</a></li>
+    <li><a href="#blockers">Project-stopping issues</a></li>
+    <li><a href="#research">What research turned up</a></li>
+    <li class="grp">PRD</li>
+    <li><a href="#prd-problem">Problem and goals</a></li>
+    <li><a href="#prd-users">Users</a></li>
+    <li><a href="#prd-req">Requirements</a></li>
+    <li><a href="#prd-metrics">Success metrics</a></li>
+    <li class="grp">TRD</li>
+    <li><a href="#trd-arch">Architecture</a></li>
+    <li><a href="#trd-data">Data sources and pipeline</a></li>
+    <li><a href="#trd-model">Data model</a></li>
+    <li><a href="#trd-api">API and app</a></li>
+    <li><a href="#trd-sec">Privacy and security</a></li>
+    <li><a href="#trd-ops">Hosting and cost</a></li>
+    <li class="grp">Build</li>
+    <li><a href="#plan">Build plan by phase</a></li>
+    <li><a href="#hack">Hackathon 48-hour plan</a></li>
+    <li class="grp">Risk</li>
+    <li><a href="#risks">Risk register</a></li>
+    <li><a href="#scale">Scaling problems</a></li>
+    <li><a href="#stake">Stakeholder roadblocks</a></li>
+    <li><a href="#open">Open questions</a></li>
+    <li><a href="#sources">Sources</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<section class="doc" id="summary">
+  <span class="eyebrow">Cuida HOU · PRD + TRD · v0.1 · Sept 26, 2026</span>
+  <h1>Cuida HOU build plan</h1>
+  <p class="lead">A bilingual, two-sided childcare network for Houston. Door 1 helps parents find licensed care they can reach. Door 2 guides women in childcare-desert ZIP codes through opening a licensed home daycare.</p>
+  <div class="kv">
+    <div><b>Owner</b>Danny Arzu</div>
+    <div><b>Context</b>Impact Hub Houston hackathon 2026</div>
+    <div><b>SDGs</b>5 · 8 · 10 · 11</div>
+    <div><b>Stack</b>Next.js on AWS Amplify · Supabase Postgres + PostGIS · Lambda ETL</div>
+  </div>
+  <h3>Verdict</h3>
+  <p>The hackathon prototype is buildable in 48 hours on public data. The core state licensing dataset is open, public domain, has an API and was updated September 15, 2026.</p>
+  <p>The bigger risks come after the weekend: real-time open-seat data, the legal accuracy of the provider pathway, deed restrictions on home businesses, and whether a support partner will take the handoff. None of these stops the prototype. Several could stop the pilot.</p>
+  <div class="callout gold">
+    <b>Fix before you pitch: slide 4 has a logic error</b>
+    <p>The ~30,000-family waitlist is for subsidy funding, not seats. Adding home providers adds seats in desert ZIP codes, but it does not shorten a funding waitlist. Pitch the provider side as a fix for deserts and working mothers, and cite the waitlist only as evidence of unmet demand.</p>
+  </div>
+</section>
+
+<section class="doc" id="blockers">
+  <span class="eyebrow">Read first</span>
+  <h2>Issues that could stop the project</h2>
+  <p>Resolve these first. Each could block a stage outright, not just slow it down.</p>
+  <div class="blockers">
+    <div class="blocker"><span class="id">B1 · blocks entry</span><h3>Hackathon rules are unknown</h3><p>We haven't confirmed whether teams can bring their own challenge or must pick from the 14 posted, who owns the code, or the submission deadline and format. Ask the organizers today.</p></div>
+    <div class="blocker"><span class="id">B2 · blocks the "open seats" promise</span><h3>No public vacancy API</h3><p>The state dataset has licensed capacity, not open seats. The Texas Workforce Commission (TWC) portal shows open seats, but I found no public API or download. Without a data-sharing agreement, the parent side shows capacity and asks parents to call.</p></div>
+    <div class="blocker"><span class="id">B3 · blocks Door 2 at pilot</span><h3>No partner to take the handoff</h3><p>The app can guide a woman to the licensing forms, but coaching, training and startup costs need a partner. Without one, Door 2 is a checklist and sign-ups stall.</p></div>
+    <div class="blocker"><span class="id">B4 · blocks individual providers</span><h3>Deed restrictions</h3><p>Houston has no zoning, but private deed restrictions can prohibit home businesses, and the City enforces them. A would-be provider could complete licensing steps and then be barred by her subdivision.</p></div>
+    <div class="blocker"><span class="id">B5 · legal exposure</span><h3>Regulatory accuracy and liability</h3><p>Wrong licensing guidance, or anything that reads as endorsing a provider, creates liability. All guidance must link to and date-stamp official Texas Health and Human Services Commission (HHSC) sources. Get a lawyer to review the disclaimers before the pilot.</p></div>
+    <div class="blocker"><span class="id">B6 · team capacity</span><h3>Who runs it after Sunday</h3><p>The pilot needs a part-time coordinator and a Spanish content reviewer. As a solo founder running three LLCs, you need these roles named before promising partners a January pilot.</p></div>
+  </div>
+</section>
+
+<section class="doc" id="research">
+  <span class="eyebrow">Process log</span>
+  <h2>What research turned up while planning</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Checked</th><th>Finding</th><th>Effect on the build</th><th>Confidence</th></tr></thead>
+    <tbody>
+      <tr><td>HHSC licensing dataset <code>bc5r-88dy</code> schema and sample rows</td><td>Public-domain license (CC0). Includes type, address, ZIP, capacity, ages served, subsidy flag, hours, days, deficiency counts and status. No latitude/longitude.</td><td>Geocoding is required. Search is by capacity, not open seats.</td><td><span class="pill p-ok">High · pulled live</span></td></tr>
+      <tr><td>Same dataset, registered home rows</td><td>Registered homes list the provider's personal name and home address.</td><td>Privacy decision: show homes at approximate location only (see TRD privacy).</td><td><span class="pill p-ok">High · pulled live</span></td></tr>
+      <tr><td>Same dataset, field formats</td><td>ZIP stored as ZIP+4 with a space (<code>77099 4006</code>). Hours stored as text (<code>07:00 AM-08:00 PM</code>, sometimes <code>-</code>). Addresses carry a <code>TX-</code> artifact.</td><td>The pipeline needs cleaning and parsing steps.</td><td><span class="pill p-ok">High</span></td></tr>
+      <tr><td>Dataset freshness</td><td>Last row update was Sept 15, 2026. One metadata field shows an older date.</td><td>Store the portal's row timestamp as the source-of-truth date.</td><td><span class="pill p-ok">High</span></td></tr>
+      <tr><td>TWC Child Care Data and Reports page</td><td>A provider-level monthly report of subsidy providers, including Texas Rising Star level and capacity, is downloadable. No vacancy download is listed.</td><td>Use it to enrich subsidy and quality info. Vacancy needs a partnership (B2).</td><td><span class="pill p-high">Medium · report date is July 2024 on the page</span></td></tr>
+      <tr><td>Children at Risk desert map</td><td>Interactive map only. No download or terms found.</td><td>Compute our own desert metric from HHSC plus Census using the same 3-to-1 definition, and cite Children at Risk as validation.</td><td><span class="pill p-ok">High</span></td></tr>
+      <tr><td>Census Geocoder</td><td>Free batch geocoding, 10,000 records per file, returns tract and block.</td><td>One Harris County batch fits in a single file.</td><td><span class="pill p-ok">High</span></td></tr>
+      <tr><td>METRO transit data</td><td>Schedule data (GTFS) is mirrored on Transitland. METRO's own API portal uses subscription keys.</td><td>Use static GTFS for stops. Skip real-time data.</td><td><span class="pill p-high">Medium-high</span></td></tr>
+      <tr><td>HHSC "Become a Child Care Home Provider" page</td><td>Returned 403 to automated fetch.</td><td>Pathway steps must be transcribed and checked by hand from HHSC pages and the Chapter 747 standards PDF.</td><td><span class="pill p-high">Manual work</span></td></tr>
+      <tr><td>Houston deed restrictions (City Planning)</td><td>The City confirms deed restrictions may legally prohibit home businesses. The Legal Department enforces them.</td><td>Add a deed-restriction check step to Door 2 (B4).</td><td><span class="pill p-ok">High</span></td></tr>
+      <tr><td>Texas SB 599 (89th session)</td><td>Would bar cities from holding home providers to standards beyond state rules. I could not confirm it passed. It likely does not reach private HOA covenants.</td><td>Do not cite it as law until checked on Texas Legislature Online.</td><td><span class="pill p-block">Unverified</span></td></tr>
+      <tr><td>Supabase free tier</td><td>Free projects pause after 7 days of low activity. Paid projects don't pause.</td><td>Fine for the hackathon. Upgrade before the pilot.</td><td><span class="pill p-ok">High</span></td></tr>
+      <tr><td>AWS hosting (replaces Vercel)</td><td>Amplify Hosting supports server-rendered Next.js. New AWS accounts made after July 15, 2025 get up to $200 in credits and a 6-month free plan instead of the old 12-month free tier.</td><td>Hackathon and early pilot can run on credits. Set a billing alarm on day one. Confirm Amplify supports the Next.js version you pick.</td><td><span class="pill p-high">Medium-high · confirm version support</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="doc" id="prd-problem">
+  <span class="eyebrow">PRD · 1</span>
+  <h2>Problem, goals and non-goals</h2>
+  <p>Greater Houston has 44 childcare-desert ZIP codes, 28 of them chronic (Children at Risk, April 2026). In Houston, 60.4% of women 16 and older are in the labor force, compared with 67.0% of all residents (ACS 2019–2023). The city is 44.2% Hispanic and 22.3% Black. Search tools exist, but none of them grows supply where it is missing, and the path to becoming a licensed provider is hard to find, especially in Spanish.</p>
+  <h3>Goals</h3>
+  <ul>
+    <li>Parents in desert ZIPs can find licensed care that matches their child's age, their hours and their commute in under two minutes, in English or Spanish.</li>
+    <li>Women in desert ZIPs can find out whether they could open a home daycare, and get a correct, current, bilingual step list plus a warm handoff to a support partner.</li>
+    <li>The City and partners can see unmet need by ZIP from public data they can check.</li>
+  </ul>
+  <h3>Non-goals</h3>
+  <ul>
+    <li>Booking, payments or enrollment. Parents contact providers directly.</li>
+    <li>Rating or recommending providers. The app shows state inspection data neutrally.</li>
+    <li>Processing subsidy applications. We link to Workforce Solutions and the state's application.</li>
+    <li>Collecting any data about children.</li>
+    <li>Any NextPlay Nexus integration. This project stands on its own.</li>
+  </ul>
+</section>
+
+<section class="doc" id="prd-users">
+  <span class="eyebrow">PRD · 2</span>
+  <h2>Users</h2>
+  <p>These are composite examples for design, not real people.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>User</th><th>Situation</th><th>Needs</th><th>Constraints</th></tr></thead>
+    <tbody>
+      <tr><td><b>Working parent</b> (e.g., a Latina mother in 77093 who rides the bus)</td><td>Toddler, early warehouse shift, no car</td><td>Care open by 6 a.m., near a bus stop on her route, accepts subsidy</td><td>Phone only, prepaid data, prefers Spanish, no time for accounts</td></tr>
+      <tr><td><b>Would-be provider</b> (e.g., an Afro-Latina mother already watching neighbors' kids informally)</td><td>Wants income from home</td><td>To know if she qualifies, what it costs, how long it takes and who helps</td><td>Deed restrictions, background-check costs, English-only forms, fear of getting it wrong</td></tr>
+      <tr><td><b>Partner navigator</b> (Workforce Solutions, Collaborative for Children, a community org)</td><td>Supports families and providers</td><td>A list of interested providers by ZIP, referral tracking</td><td>Their own case systems; privacy rules</td></tr>
+      <tr><td><b>City or funder staff</b></td><td>Planning and reporting</td><td>Need by ZIP, seats added over time</td><td>Wants numbers they can defend</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="doc" id="prd-req">
+  <span class="eyebrow">PRD · 3</span>
+  <h2>Requirements</h2>
+  <p>Priority key: P0 is the hackathon MVP, P1 is the pilot, P2 is after the pilot.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>ID</th><th>Requirement</th><th>Priority</th><th>Acceptance</th></tr></thead>
+    <tbody>
+      <tr><td>F1</td><td>Search licensed operations by ZIP or address, child's age group, days and hours, and subsidy acceptance</td><td><span class="pill p-block">P0</span></td><td>Returns active Harris County operations only. Filters combine. Results in under 1.5 s on 4G.</td></tr>
+      <tr><td>F2</td><td>Full English/Spanish parity with a one-tap language switch; Spanish by default when the browser prefers it</td><td><span class="pill p-block">P0</span></td><td>No untranslated strings. Spanish reviewed by a native speaker before any public launch.</td></tr>
+      <tr><td>F3</td><td>Show nearest METRO stops and routes for each result</td><td><span class="pill p-block">P0</span></td><td>Stops within 800 m listed with route numbers.</td></tr>
+      <tr><td>F4</td><td>Show state inspection summary (deficiency counts, corrective or adverse action) with a link to the official record</td><td><span class="pill p-block">P0</span></td><td>Neutral wording, no scores or stars. Official link on every result.</td></tr>
+      <tr><td>F5</td><td>Need map: seats per 100 children of working parents by ZIP, with desert flag</td><td><span class="pill p-block">P0</span></td><td>Method shown on page. ACS vintage and margin-of-error notes visible.</td></tr>
+      <tr><td>F6</td><td>Provider eligibility quiz: permit type (listed, registered or licensed home), household basics, and deed-restriction warning</td><td><span class="pill p-block">P0</span></td><td>Every step cites an HHSC source with a "verified on" date.</td></tr>
+      <tr><td>F7</td><td>Bilingual step-by-step licensing checklist per permit type</td><td><span class="pill p-block">P0</span></td><td>Steps match current HHSC rules. Legal reviewer signs off before the pilot.</td></tr>
+      <tr><td>F8</td><td>Interest form: a would-be provider shares a ZIP, language and contact method, with explicit consent to share with one named partner</td><td><span class="pill p-high">P1</span></td><td>Consent stored with a timestamp. Contact data encrypted. Delete on request.</td></tr>
+      <tr><td>F9</td><td>Open-seat data from TWC or partners, or provider self-reports tied to a state operation ID</td><td><span class="pill p-high">P1</span></td><td>Each seat count shows its source and age. Hidden after 14 days without an update.</td></tr>
+      <tr><td>F10</td><td>SMS / WhatsApp search ("text your ZIP and child's age")</td><td><span class="pill p-high">P1</span></td><td>Works without data. Reply in the texter's language.</td></tr>
+      <tr><td>F11</td><td>Public impact dashboard (licenses in progress, new seats in desert ZIPs)</td><td><span class="pill p-high">P1</span></td><td>Aggregates only; no individual provider leads shown.</td></tr>
+      <tr><td>F12</td><td>Partner console for navigators to see and update leads</td><td><span class="pill p-med">P2</span></td><td>Role-based access, audit log.</td></tr>
+      <tr><td>F13</td><td>More languages (Vietnamese, Chinese, Arabic, Haitian Creole based on ACS demand)</td><td><span class="pill p-med">P2</span></td><td>Chosen by ACS language data by ZIP.</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Design principles</h3>
+  <ul>
+    <li>Mobile first, works on a slow connection, no login to search.</li>
+    <li>Plain language at about a 6th-grade reading level in both languages.</li>
+    <li>WCAG 2.1 AA: screen-reader labels, contrast, keyboard use.</li>
+    <li>Show where every number comes from and how old it is.</li>
+  </ul>
+</section>
+
+<section class="doc" id="prd-metrics">
+  <span class="eyebrow">PRD · 4</span>
+  <h2>Success metrics</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Stage</th><th>Metric</th><th>Target</th></tr></thead>
+    <tbody>
+      <tr><td>Hackathon</td><td>Working demo on live HHSC data for Harris County, both languages, both doors</td><td>Demo-ready Sunday</td></tr>
+      <tr><td>Validation (Oct)</td><td>Interviews with parents and would-be providers in 2–3 desert ZIPs</td><td class="todo"><span class="pill p-high">Set with team · suggest 20+</span></td></tr>
+      <tr><td>Pilot · leading</td><td>Searches, calls or directions tapped, provider quiz completions, consented partner handoffs</td><td><span class="pill p-high">Set with partner</span></td></tr>
+      <tr><td>Pilot · lagging</td><td>Home-provider permits issued in target ZIPs, seats added, change in seats per 100</td><td><span class="pill p-high">Set with partner</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="src">Licensing takes time: training, background checks and inspection. Expect lagging results to come after a 3-month pilot window. Report leading indicators in March and permits later.</p>
+</section>
+
+<section class="doc" id="trd-arch">
+  <span class="eyebrow">TRD · 1</span>
+  <h2>Architecture</h2>
+  <pre class="mermaid">
+flowchart LR
+  subgraph Sources[Public sources]
+    A[HHSC licensing API<br/>data.texas.gov]
+    B[Census ACS API]
+    C[Census Geocoder batch]
+    D[METRO GTFS]
+    E[TWC subsidy provider report]
+  end
+  subgraph Pipeline[Nightly ETL · EventBridge Scheduler + Lambda, Node 22]
+    F[Fetch and clean]
+    G[Geocode new or changed rows]
+    H[Join to ZCTA and tract]
+    I[Compute need score]
+  end
+  subgraph Store[Supabase Postgres + PostGIS]
+    J[(providers)]
+    K[(zcta_need)]
+    L[(transit_stops)]
+    M[(pathway_steps)]
+    N[(provider_leads · encrypted)]
+  end
+  subgraph App[Next.js on AWS Amplify Hosting]
+    O[Search · Door 1]
+    P[Pathway · Door 2]
+    Q[Need map]
+    R[Route handlers /api]
+  end
+  A-->F; E-->F; F-->G; C-->G; G-->H; B-->I; H-->I; D-->L
+  F-->J; I-->K
+  J-->R; K-->R; L-->R; M-->P
+  R-->O; R-->Q; P-->N
+  </pre>
+  <p>AWS Amplify Hosting builds and serves the Next.js app, including server-rendered pages and API routes, behind CloudFront. Supabase Postgres with PostGIS holds the data and handles distance queries. A Lambda function in Node 22, triggered nightly by EventBridge Scheduler, runs the data pipeline. Secrets live in AWS Secrets Manager. For local development, use VS Code with WSL Ubuntu, the AWS CLI and the Supabase CLI running a local stack.</p><p class="src">Why keep Supabase instead of Amazon RDS: RDS supports PostGIS too, but an always-on instance costs money from day one and needs VPC setup. Supabase is the faster path for the weekend. Moving to RDS later is a standard Postgres dump and restore.</p>
+</section>
+
+<section class="doc" id="trd-data">
+  <span class="eyebrow">TRD · 2</span>
+  <h2>Data sources and pipeline</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Source</th><th>Pull</th><th>Fields used</th><th>Refresh</th><th>Gotchas</th></tr></thead>
+    <tbody>
+      <tr><td>HHSC operations <code>bc5r-88dy</code></td><td>Socrata SODA: <code>/resource/bc5r-88dy.json?county=HARRIS&amp;operation_status=Y</code>, paged with <code>$limit</code>/<code>$offset</code>; app token recommended</td><td>operation_id, operation_type, name, address_line, city, zipcode, total_capacity, licensed_to_serve_ages, accepts_child_care_subsidies, hours/days, deficiency_*, corrective_action, adverse_action, temporarily_closed, phone</td><td>Nightly</td><td>No coordinates. ZIP+4 with a space. Text hours. Exclude residential operation types (e.g., General Residential Operation, Child Placing Agency).</td></tr>
+      <tr><td>HHSC inspections and violations (linked datasets)</td><td>Join by operation_id</td><td>Link-out only at P0</td><td>Weekly</td><td>Large tables. Don't mirror at P0.</td></tr>
+      <tr><td>Census ACS 5-year API</td><td><code>api.census.gov/data/{year}/acs/acs5</code> at ZCTA and tract level; free key</td><td>B23008 (children under 6 by parents' employment), B03002 (Hispanic origin by race, including Black Hispanic), C16001 (language at home), B23001 or S2301 (women's employment)</td><td>Yearly</td><td>ZCTAs are not USPS ZIPs. Small-group estimates, especially Afro-Latino counts, have large margins of error. Show them.</td></tr>
+      <tr><td>Census Geocoder (batch)</td><td>CSV upload, up to 10,000 rows per batch, geographies return type</td><td>lat, lng, tract, block</td><td>New or changed rows</td><td>Some addresses won't match. Fall back to the ZIP centroid and flag precision.</td></tr>
+      <tr><td>METRO GTFS (static)</td><td>Transitland mirror or METRO feed</td><td>stops.txt, routes.txt, trips/stop_times for routes serving each stop</td><td>Weekly</td><td>Service changes. Confirm license terms.</td></tr>
+      <tr><td>TWC CCS monthly provider report</td><td>Download</td><td>Texas Rising Star level, subsidy participation</td><td>Monthly if current</td><td>The page lists a July 2024 file. Check for newer ones.</td></tr>
+      <tr><td>CDC/ATSDR Social Vulnerability Index</td><td>Download (tract)</td><td>Overall SVI, language and transportation themes</td><td>When released</td><td>Tract-level. Aggregate to ZCTA with a population-weighted crosswalk.</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Need score</h3>
+  <pre class="code">seats_per_100 = licensed_capacity_in_zcta / children_under6_all_parents_working × 100
+desert        = seats_per_100 &lt; 33.3        -- more than 3 children per licensed seat
+need_rank     = rank by (desert, lowest seats_per_100, highest SVI)</pre>
+  <p class="src">This mirrors Children at Risk's public definition, but their exact method may differ, for example in how school-age capacity is counted. Compare our list of 44 ZIPs with theirs and explain any gap on the page.</p>
+  <h3>Cleaning steps</h3>
+  <ol class="list">
+    <li>Keep active Harris County day-care types only.</li>
+    <li>Normalize ZIP to 5 digits. Strip the <code>TX-</code> artifact from addresses.</li>
+    <li>Parse hours into <code>open_time</code> and <code>close_time</code>. Mark <code>-</code> or blanks as unknown.</li>
+    <li>Split <code>licensed_to_serve_ages</code> into an array.</li>
+    <li>Hash each row. Geocode only new or changed addresses.</li>
+    <li>For home operation types, round public coordinates to about 500 m and hide the street address in the UI.</li>
+  </ol>
+</section>
+
+<section class="doc" id="trd-model">
+  <span class="eyebrow">TRD · 3</span>
+  <h2>Data model</h2>
+  <pre class="code">providers(
+  operation_id text pk, name text, operation_type text, is_home bool,
+  address_line text, zip5 char(5), geom geography(point), location_precision text,  -- 'exact' | 'approx'
+  public_geom geography(point),       -- rounded for homes
+  capacity int, ages text[], accepts_subsidy bool, trs_level text null,
+  open_time time null, close_time time null, days text[],
+  deficiency_high int, deficiency_medium_high int, corrective_action bool, adverse_action bool,
+  temporarily_closed bool, phone text, source_row_updated_at timestamptz, row_hash text)
+
+zcta_need(zcta char(5) pk, children_u6_working int, children_moe int, capacity int,
+  seats_per_100 numeric, desert bool, pct_spanish_home numeric, pct_hispanic numeric,
+  pct_black numeric, black_hispanic int, black_hispanic_moe int, svi numeric,
+  acs_vintage text, computed_at timestamptz)
+
+transit_stops(stop_id text pk, name text, geom geography(point), routes text[])
+provider_stops(operation_id text, stop_id text, distance_m int)   -- precomputed, 800 m
+
+pathway_steps(id serial, permit_type text, step_order int, title_en text, title_es text,
+  body_en text, body_es text, source_url text, verified_on date, reviewer text)
+
+provider_leads(id uuid, created_at timestamptz, zcta char(5), language text,
+  contact_method text, contact_enc bytea, consent_text_version text, consent_at timestamptz,
+  partner_id uuid, status text, deleted_at timestamptz null)       -- P1, RLS: partner-only
+
+seat_reports(operation_id text, age_group text, open_seats int, source text,
+  reported_at timestamptz, verified bool)                          -- P1</pre>
+  <p>Row-level security: public read on <code>providers</code> (public columns only via a view), <code>zcta_need</code>, <code>transit_stops</code> and <code>pathway_steps</code>. No public access to <code>provider_leads</code>. Partners see only their own leads.</p>
+</section>
+
+<section class="doc" id="trd-api">
+  <span class="eyebrow">TRD · 4</span>
+  <h2>API and app</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Endpoint</th><th>Purpose</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>GET /api/providers?near=lat,lng|zip&amp;age=&amp;subsidy=&amp;opensBy=&amp;day=&amp;radius=</code></td><td>Door 1 search</td><td>PostGIS <code>ST_DWithin</code> on <code>public_geom</code>, sorted by distance. Cached 1 hour at CloudFront.</td></tr>
+      <tr><td><code>GET /api/providers/:id</code></td><td>Detail with stops and inspection summary</td><td>Links to the official HHSC record.</td></tr>
+      <tr><td><code>GET /api/need?zcta=</code> · <code>GET /api/need/geojson</code></td><td>Need map</td><td>ZCTA boundaries simplified and served as static GeoJSON.</td></tr>
+      <tr><td><code>GET /api/pathway?permit=&amp;lang=</code></td><td>Door 2 checklist</td><td>Returns <code>verified_on</code> dates for each step.</td></tr>
+      <tr><td><code>POST /api/leads</code> (P1)</td><td>Provider interest</td><td>Rate limit, bot check, consent required, contact encrypted server-side.</td></tr>
+      <tr><td><code>POST /api/sms</code> (P1)</td><td>Text search webhook</td><td>Twilio or similar. Parses "ZIP + age". Replies in the incoming language.</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Front end</h3>
+  <ul>
+    <li>Next.js App Router with locale routes (<code>/es</code>, <code>/en</code>) and a translation library such as <code>next-intl</code>. Every user-facing string lives in message files.</li>
+    <li>Map with MapLibre GL and a free vector tile source, or a static list with no map on slow connections.</li>
+    <li>Pathway content in MDX per language, with the source URL and verified date rendered under every step.</li>
+    <li>Privacy-friendly analytics with no cookies and no personal data.</li>
+  </ul>
+</section>
+
+<section class="doc" id="trd-sec">
+  <span class="eyebrow">TRD · 5</span>
+  <h2>Privacy, safety and security</h2>
+  <ul>
+    <li><b>Home providers' addresses.</b> The state publishes them, but republishing a woman's home address on a map is a different act. Show homes at approximate location with the phone number, and link to the official record for the full address.</li>
+    <li><b>No child data.</b> Parents search without accounts. No names, ages of specific children or immigration-related questions are ever collected.</li>
+    <li><b>Provider leads (P1).</b> Minimal fields, explicit consent naming the partner, encryption, deletion on request, retention limit (suggest 12 months). Have a lawyer check Texas privacy law obligations before collecting leads.</li>
+    <li><b>No endorsements.</b> Present state data as-is, with a disclaimer that the listing is not a recommendation and families should visit and verify.</li>
+    <li><b>Fraud.</b> Only list operations that exist in the state dataset. Self-reported seats must tie to a verified operation ID.</li>
+    <li><b>Security basics.</b> Supabase row-level security on every table, service keys only on the server, dependency scanning, secrets in AWS Secrets Manager, least-privilege IAM roles for Amplify and Lambda, AWS Budgets alarm on the account.</li>
+  </ul>
+</section>
+
+<section class="doc" id="trd-ops">
+  <span class="eyebrow">TRD · 6</span>
+  <h2>Hosting and cost</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Item</th><th>Hackathon</th><th>Pilot</th><th>Confidence</th></tr></thead>
+    <tbody>
+      <tr><td>Supabase</td><td>Free (pauses after 7 days idle)</td><td>Pro plan, about $25/month</td><td><span class="pill p-high">Medium · check current pricing</span></td></tr>
+      <tr><td>AWS Amplify Hosting, Lambda, EventBridge, Secrets Manager</td><td>New-account credits (up to $200) or free plan</td><td>Pay as you go; expected low at pilot traffic. Apply for AWS nonprofit or startup credits.</td><td><span class="pill p-high">Estimate · check pricing pages</span></td></tr>
+      <tr><td>Census API, Geocoder, HHSC API, GTFS</td><td>Free</td><td>Free</td><td><span class="pill p-ok">High</span></td></tr>
+      <tr><td>SMS (P1)</td><td>None</td><td>Per-message fees plus A2P 10DLC registration</td><td><span class="pill p-high">Get a quote</span></td></tr>
+      <tr><td>Translation review</td><td>A volunteer native speaker</td><td>Paid reviewer for regulatory content</td><td><span class="pill p-high">Set budget</span></td></tr>
+      <tr><td>Legal review</td><td>None</td><td>Disclaimers, privacy policy, pathway content (pro bono clinic possible)</td><td><span class="pill p-high">Set budget</span></td></tr>
+      <tr><td>Coordinator</td><td>None</td><td>Part-time, about 10–20 hrs/week</td><td><span class="pill p-high">Set budget</span></td></tr>
+    </tbody>
+  </table></div>
+  <p class="src">Infrastructure costs are small. People (coordination, translation, legal review) are the real cost of the pilot.</p>
+</section>
+
+<section class="doc" id="plan">
+  <span class="eyebrow">Build</span>
+  <h2>Build plan by phase</h2>
+  <div class="phase">
+    <div><span class="d">Phase 0 · before build</span><h3>Unblock</h3><ul><li>Get hackathon rules (B1)</li><li>Recruit teammates: a front-end dev, a Spanish reviewer, a data person</li><li>Get Census and Socrata keys, create the Supabase project</li><li>Run a test data pull and geocode</li></ul></div>
+    <div><span class="d">Phase 1 · hackathon</span><h3>Prototype</h3><ul><li>F1–F7 on Harris County data</li><li>Need map plus two Door 2 permit paths</li><li>Demo script built around two personas</li></ul></div>
+    <div><span class="d">Phase 2 · Oct–Dec 2026</span><h3>Validate</h3><ul><li>Interviews in 2–3 desert ZIPs</li><li>Ask TWC and Workforce Solutions about vacancy data (B2)</li><li>Sign a support partner (B3)</li><li>Legal and Spanish review</li></ul></div>
+    <div><span class="d">Phase 3 · Jan–Mar 2027</span><h3>Pilot</h3><ul><li>F8–F11 live</li><li>First provider cohort with the partner</li><li>Upgrade hosting</li><li>March report on leading indicators</li></ul></div>
+    <div><span class="d">Phase 4 · after</span><h3>Scale or hand off</h3><ul><li>Expand counties and languages</li><li>Or hand the tool to a partner organization to run</li></ul></div>
+  </div>
+</section>
+
+<section class="doc" id="hack">
+  <span class="eyebrow">Build</span>
+  <h2>Hackathon 48-hour plan</h2>
+  <p>The submission deadline isn't confirmed, so the hours below count from kickoff. Test after each block: build, check with real data, fix, repeat.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Hours</th><th>Work</th><th>Done when</th></tr></thead>
+    <tbody>
+      <tr><td class="num">0–3</td><td>Repo scaffold (Next.js, next-intl, Supabase local), schema migration, ETL script pulls Harris County rows</td><td>About N rows in <code>providers</code>. Check count against the portal.</td></tr>
+      <tr><td class="num">3–7</td><td>Clean and geocode (Census batch), load GTFS stops, precompute nearest stops</td><td>90%+ exact geocodes. Unmatched rows flagged.</td></tr>
+      <tr><td class="num">7–10</td><td>Pull ACS tables, compute need score, compare desert ZIPs with Children at Risk</td><td>Our desert list reviewed. Differences explained.</td></tr>
+      <tr><td class="num">10–18</td><td>Door 1: search page, filters, result cards, inspection summary, stops</td><td>Persona 1 finds a 6 a.m. option near her bus in Spanish.</td></tr>
+      <tr><td class="num">18–26</td><td>Door 2: eligibility quiz, deed-restriction step, checklist for registered and licensed homes, with sources</td><td>Every step has a source link and a verified date.</td></tr>
+      <tr><td class="num">26–32</td><td>Need map, Spanish pass, accessibility pass, slow-network test</td><td>Lighthouse accessibility 90+. Page usable on throttled 3G.</td></tr>
+      <tr><td class="num">32–40</td><td>Deploy to Amplify, set billing alarm, seed demo, fix bugs, write README with data sources and limits</td><td>Public URL works on a phone.</td></tr>
+      <tr><td class="num">40–48</td><td>Update pitch deck (fix slide 4), rehearse demo, submit</td><td>Submitted with a backup video.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="src">Cut line if short on time: drop the need map to a table, and ship Door 2 with the registered-home path only.</p>
+</section>
+
+<section class="doc" id="risks">
+  <span class="eyebrow">Risk</span>
+  <h2>Risk register</h2>
+  <p>Likelihood (L) and impact (I) are rated High, Medium or Low. The "Status" column says whether the issue is confirmed by research or still an assumption.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>ID</th><th>Area</th><th>Risk</th><th>L / I</th><th>Mitigation</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>R1</td><td>Event</td><td>Own-challenge entries not allowed, or code ownership conflicts with your plans</td><td>M / H</td><td>Ask organizers now. Fallback: frame under a posted challenge (Mid-Career Skills or Senior Re-Housing, which already names women caregivers)</td><td><span class="pill p-block">Unknown</span></td></tr>
+      <tr><td>R2</td><td>Data</td><td>No open-seat data, so parents call full providers</td><td>H / H</td><td>Label as "licensed capacity". Pursue a TWC data agreement. Provider self-report at P1.</td><td><span class="pill p-ok">Confirmed</span></td></tr>
+      <tr><td>R3</td><td>Data</td><td>Geocoding misses or wrong points</td><td>M / M</td><td>ZIP-centroid fallback with a precision flag. Manual fix list.</td><td><span class="pill p-ok">Confirmed format issues</span></td></tr>
+      <tr><td>R4</td><td>Data</td><td>ZIP vs ZCTA mismatch skews need scores</td><td>M / M</td><td>Use ZCTA for need and ZIP for search. Explain on the page.</td><td><span class="pill p-ok">Known issue</span></td></tr>
+      <tr><td>R5</td><td>Data</td><td>ACS margins of error too large for Afro-Latino counts by ZIP</td><td>H / M</td><td>Show margins of error. Report Afro-Latino figures citywide or by larger areas.</td><td><span class="pill p-ok">Known issue</span></td></tr>
+      <tr><td>R6</td><td>Data</td><td>Our desert list disagrees with Children at Risk's</td><td>M / M</td><td>Publish our method. Invite Children at Risk to review.</td><td><span class="pill p-high">Likely</span></td></tr>
+      <tr><td>R7</td><td>Data</td><td>HHSC changes schema or the API goes down</td><td>L / M</td><td>Schema checks in ETL. Keep the last good snapshot.</td><td><span class="pill p-med">Assumed</span></td></tr>
+      <tr><td>R8</td><td>Legal</td><td>Pathway guidance wrong or out of date</td><td>M / H</td><td>Source link and verified date per step, quarterly re-check, legal review</td><td><span class="pill p-high">Manual process</span></td></tr>
+      <tr><td>R9</td><td>Legal</td><td>Deed restrictions block home providers</td><td>M / H</td><td>Early warning step, link to the City's deed-restriction info, partner legal clinic</td><td><span class="pill p-ok">Confirmed possible</span></td></tr>
+      <tr><td>R10</td><td>Legal</td><td>Liability if a listed provider harms a child</td><td>L / H</td><td>No endorsements, neutral state data, disclaimers, legal review</td><td><span class="pill p-med">Assumed</span></td></tr>
+      <tr><td>R11</td><td>Legal</td><td>Privacy obligations for provider leads</td><td>M / M</td><td>Collect minimal data with consent. Legal check of Texas privacy law.</td><td><span class="pill p-block">Unverified</span></td></tr>
+      <tr><td>R12</td><td>Product</td><td>Republishing home addresses puts providers at risk</td><td>M / H</td><td>Approximate location for homes</td><td><span class="pill p-ok">Confirmed data</span></td></tr>
+      <tr><td>R13</td><td>Product</td><td>Low trust or adoption; families rely on word of mouth</td><td>H / H</td><td>Launch through churches, clinics, schools and promotoras. SMS option. Community ambassadors.</td><td><span class="pill p-med">Assumed</span></td></tr>
+      <tr><td>R14</td><td>Product</td><td>Poor Spanish (literal or regulatory errors)</td><td>M / H</td><td>Native-speaker review. Plain-language style guide. Test with users.</td><td><span class="pill p-med">Assumed</span></td></tr>
+      <tr><td>R15</td><td>Product</td><td>Duplicates existing TWC portal or partner programs</td><td>M / M</td><td>Position as a complement: transit, desert focus, provider supply. Link to TWC.</td><td><span class="pill p-high">Check partner programs</span></td></tr>
+      <tr><td>R16</td><td>Supply</td><td>Licensing takes months, so pilot shows few new permits</td><td>H / M</td><td>Report leading indicators. Set expectations with funders.</td><td><span class="pill p-high">Likely</span></td></tr>
+      <tr><td>R17</td><td>Supply</td><td>Startup costs (background checks, safety equipment, training) deter providers</td><td>H / H</td><td>Find microgrants or startup support through partners. Show costs up front.</td><td><span class="pill p-high">Costs unverified</span></td></tr>
+      <tr><td>R18</td><td>Supply</td><td>Home daycare margins are thin; new providers close</td><td>M / H</td><td>Connect to subsidy enrollment, Texas Rising Star support and business coaching</td><td><span class="pill p-med">Assumed</span></td></tr>
+      <tr><td>R19</td><td>Supply</td><td>Subsidy funding, not seats, limits low-income families</td><td>H / M</td><td>Don't claim the tool shortens the waitlist. Fix slide 4.</td><td><span class="pill p-ok">Confirmed</span></td></tr>
+      <tr><td>R20</td><td>Tech</td><td>Supabase free tier pauses; AWS bill surprises after credits run out</td><td>M / M</td><td>Upgrade Supabase before the pilot. AWS Budgets alarm at $10 and $50. Tag all resources.</td><td><span class="pill p-ok">Confirmed</span></td></tr><tr><td>R29</td><td>Tech</td><td>Amplify server-side environment variables aren&#39;t exposed to the Next.js runtime by default</td><td>M / M</td><td>Write the needed variables into <code>.env.production</code> in <code>amplify.yml</code> during the build, or read them from Secrets Manager at runtime</td><td><span class="pill p-high">Known gotcha · test early</span></td></tr>
+      <tr><td>R21</td><td>Tech</td><td>Weak performance on slow phones</td><td>M / M</td><td>Server rendering, list-first view, small bundles</td><td><span class="pill p-med">Assumed</span></td></tr>
+      <tr><td>R22</td><td>Team</td><td>Hackathon teammates leave after Sunday</td><td>H / H</td><td>Name owners for pilot roles. Consider handing off to a partner org.</td><td><span class="pill p-high">Likely</span></td></tr>
+      <tr><td>R23</td><td>Funding</td><td>Parents can't pay, so revenue depends on grants or government</td><td>H / M</td><td>Grant plan (City, county, foundations, workforce boards). Keep costs low.</td><td><span class="pill p-med">Assumed</span></td></tr>
+      <tr><td>R24</td><td>Stakeholder</td><td>The City can't regulate childcare (the state does), so its role is limited</td><td>H / M</td><td>Ask the City for convening, promotion, data and space, not regulation</td><td><span class="pill p-ok">Structural</span></td></tr>
+      <tr><td>R25</td><td>Stakeholder</td><td>City and county run separate programs; alignment is slow</td><td>M / M</td><td>Engage both. Stay neutral. Lead with public data.</td><td><span class="pill p-med">Assumed</span></td></tr>
+      <tr><td>R26</td><td>Stakeholder</td><td>State agencies slow to share vacancy data</td><td>H / M</td><td>Start the request in October. Go through Workforce Solutions Gulf Coast.</td><td><span class="pill p-med">Assumed</span></td></tr>
+      <tr><td>R27</td><td>Stakeholder</td><td>Existing centers see home providers as competition</td><td>L / M</td><td>Frame around desert ZIPs where demand far exceeds supply</td><td><span class="pill p-med">Assumed</span></td></tr>
+      <tr><td>R28</td><td>Policy</td><td>State licensing or subsidy rules change mid-pilot</td><td>M / M</td><td>Quarterly content review. Watch HHSC rule notices in the Texas Register.</td><td><span class="pill p-med">Assumed</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="doc" id="scale">
+  <span class="eyebrow">Risk</span>
+  <h2>Problems that show up at scale</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>When it grows to…</th><th>What breaks</th><th>Plan</th></tr></thead>
+    <tbody>
+      <tr><td>All of Greater Houston (6+ counties)</td><td>Need scores near county lines; partners differ by county</td><td>Region-wide ZCTA model. Partner map per county.</td></tr>
+      <tr><td>Hundreds of provider leads</td><td>Partner coaching capacity runs out before the tech does</td><td>Cohort model, waitlist messaging, more partners before more marketing</td></tr>
+      <tr><td>Self-reported seats</td><td>Stale or false counts; moderation work</td><td>Auto-expire after 14 days, operation-ID check, spot calls</td></tr>
+      <tr><td>More languages</td><td>Translation and review costs multiply, especially for regulatory text</td><td>Pick languages by ACS demand. Partner with community translators. Version content.</td></tr>
+      <tr><td>SMS volume</td><td>Per-message costs, carrier registration, spam filtering</td><td>Budget per message. Register early. Offer WhatsApp as a lower-cost option.</td></tr>
+      <tr><td>Other Texas cities</td><td>Data is statewide (easy); partners, transit feeds and deed rules are local (hard)</td><td>Config per city. A local partner is required to launch.</td></tr>
+      <tr><td>Other states</td><td>Different licensing data, permit types and rules</td><td>Adapter per state. Rewrite pathway content per state.</td></tr>
+      <tr><td>Rule changes</td><td>Outdated pathway steps across languages</td><td>Content owner, quarterly review, verified-on dates shown to users</td></tr>
+      <tr><td>Being the "source" families trust</td><td>Liability and expectations rise; outages matter</td><td>Formal governance, a fiscal sponsor or nonprofit home, service commitments</td></tr>
+      <tr><td>Grant cycles end</td><td>The tool goes stale</td><td>Plan the handoff to a long-term host (a partner org or the City) from the start</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="doc" id="stake">
+  <span class="eyebrow">Risk</span>
+  <h2>Stakeholder roadblocks</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Stakeholder</th><th>What we need</th><th>Possible roadblock</th><th>Approach</th></tr></thead>
+    <tbody>
+      <tr><td>Impact Hub Houston</td><td>Entry approval, mentors</td><td>Own challenge not allowed; judging favors posted challenges</td><td>Ask now. Show the SDG 5 gap across the posted list.</td></tr>
+      <tr><td>City of Houston</td><td>Promotion, data, convening, possible pilot host</td><td>No childcare regulatory role; budget and priority limits; staff turnover</td><td>Ask for low-cost help first: a letter of support, promotion, meeting space</td></tr>
+      <tr><td>Harris County</td><td>Coordination with county childcare efforts</td><td>Separate programs from the City; unclear current program status</td><td>Map county programs before outreach. Confirm what is active.</td></tr>
+      <tr><td>Texas HHSC</td><td>Accurate licensing info; possibly a Spanish content review</td><td>State agency pace; can't endorse third-party tools</td><td>Use only public materials. Ask for a factual review, not an endorsement.</td></tr>
+      <tr><td>TWC / Workforce Solutions Gulf Coast</td><td>Vacancy data, subsidy referrals</td><td>Data-sharing agreements take months; they already run a portal</td><td>Position as a channel that drives families to their system</td></tr>
+      <tr><td>Children at Risk</td><td>Method validation, data</td><td>They may prefer their own tools; data terms unknown</td><td>Credit their work. Ask for review.</td></tr>
+      <tr><td>Collaborative for Children and similar groups</td><td>Provider coaching and handoff</td><td>Capacity, their own intake systems, possible overlap</td><td>Offer leads in their format. Let them own the relationship.</td></tr>
+      <tr><td>HOAs and civic clubs</td><td>Not blocking home providers</td><td>Deed restrictions and neighbor complaints</td><td>Warn providers early. Legal clinic referral.</td></tr>
+      <tr><td>Community orgs, churches, clinics</td><td>Reach and trust</td><td>Outreach capacity</td><td>Printed bilingual cards with a QR code and SMS number</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="doc" id="open">
+  <span class="eyebrow">Next</span>
+  <h2>Open questions for you</h2>
+  <ol class="list">
+    <li>Can teams bring their own challenge, and who owns the code? (B1)</li>
+    <li>What is the submission deadline and format?</li>
+    <li>Who is on the team, and who can review Spanish?</li>
+    <li>Do you have a contact at Workforce Solutions Gulf Coast, Collaborative for Children or Children at Risk?</li>
+    <li>After the pilot, do you want to run this long term, or hand it to a partner organization?</li>
+    <li>Should I fix slide 4 and add a data-limits note to the deck now?</li>
+  </ol>
+  <div class="callout teal"><b>Items to verify manually</b><p>SB 599 passage and scope; Amplify support for your Next.js version; AWS credit eligibility for your account; current Supabase Pro price; whether the TWC portal is fully in Spanish; home-provider startup costs (background checks, training); a newer TWC provider report; METRO GTFS license terms.</p></div>
+</section>
+
+<section class="doc" id="sources">
+  <span class="eyebrow">Appendix</span>
+  <h2>Sources</h2>
+  <ul>
+    <li><a href="https://data.texas.gov/See-Category-Tile/HHSC-CCL-Daycare-and-Residential-Operations-Data/bc5r-88dy">HHSC CCL Daycare and Residential Operations Data</a>, Texas Open Data Portal. Schema and rows pulled Sept 26, 2026; last row update Sept 15, 2026; CC0 license.</li>
+    <li><a href="https://www.twc.texas.gov/programs/child-care/data-reports-plans">TWC Child Care Data, Reports and Plans</a> and <a href="https://www.twc.texas.gov/programs/child-care/for-parents">TWC for Parents</a> (availability portal).</li>
+    <li><a href="https://childrenatrisk.org/childcaredeserts/">Children at Risk, Child Care Deserts</a> (April 2026 update) and <a href="https://communityimpact.com/houston/katy-fulshear/education/2026/05/01/greater-houston-struggling-to-keep-up-with-growing-demand-for-childcare/">Community Impact coverage</a>, May 2026.</li>
+    <li><a href="https://www.houstonchronicle.com/politics/texas/article/child-care-texas-daycare-crisis-20238491.php">Houston Chronicle on subsidy waitlists</a>, April 2025.</li>
+    <li><a href="https://www.census.gov/quickfacts/houstoncitytexas">Census QuickFacts, Houston</a>; <a href="https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html">Census Geocoding Services API</a>.</li>
+    <li><a href="https://www.hhs.texas.gov/sites/default/files/documents/doing-business-with-hhs/provider-portal/protective-services/ccl/licensed-registered-listed-family-child-care-home.pdf">HHSC Child Care Home Provider Types</a> (rev. March 2026); <a href="https://www.hhs.texas.gov/sites/default/files/documents/chapter-747-homes.pdf">Chapter 747 Minimum Standards</a>.</li>
+    <li><a href="https://www.houstontx.gov/planning/Neighborhood/deed_restr.html">City of Houston, About Deed Restrictions</a>.</li>
+    <li><a href="https://www.texaspolicyresearch.com/bills/89th-legislature-sb-599/">Texas Policy Research on SB 599</a> and <a href="https://capitol.texas.gov/tlodocs/89R/analysis/pdf/SB00599F.pdf">Senate bill analysis</a> (passage unverified).</li>
+    <li><a href="https://www.transit.land/feeds/f-9vk-metropolitantransitauthorityofharriscounty">Transitland, METRO GTFS feed</a>; <a href="https://api-portal.ridemetro.org/">METRO API portal</a>.</li>
+    <li><a href="https://supabase.com/docs/guides/platform/free-project-pausing">Supabase free project pausing</a>.</li>
+    <li><a href="https://aws.amazon.com/about-aws/whats-new/2025/07/aws-free-tier-credits-month-free-plan/">AWS Free Tier credits and 6-month free plan</a> (July 2025); <a href="https://aws.amazon.com/amplify/pricing/">AWS Amplify pricing</a>.</li>
+  </ul>
+</section>
+
+</main>
+</div>
+
+</body>
+</html>
