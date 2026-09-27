@@ -26,6 +26,8 @@ Secrets Manager: master login (pipeline) · cuida_web login (web, read-only) · 
 
 Prereqs: AWS CLI v2 (`aws configure`), AWS SAM CLI, region `us-east-1` (or your choice; stay consistent).
 
+> **Don't create the database by hand, and don't use Aurora DSQL.** DSQL is a different product with no PostGIS, no array columns and no PL/pgSQL, so this schema can't run on it. `sam deploy` creates the right database (Aurora Serverless v2) for you.
+
 ```bash
 # 0. Guardrail: AWS Console -> Billing -> Budgets -> $10 and $50 alerts to your email.
 
