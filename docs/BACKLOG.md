@@ -11,8 +11,8 @@ Suggested GitHub issues. Labels: `blocker`, `P0`, `P1`, `P2`, `data`, `content`,
 
 ## P0 (hackathon)
 - [ ] Run first live `etl:sync`; record row counts and geocode match rate `data`
-- [ ] Replace `HARRIS_PREFIXES` with a county–ZCTA crosswalk `data`
-- [ ] Verify ACS variable IDs for the chosen year `data`
+- [x] Replace `HARRIS_PREFIXES` with a county–ZCTA crosswalk `data`
+- [x] Verify ACS variable IDs for the chosen year `data` (2023 and 2024 5-year, verified 2026-09-26)
 - [ ] Load METRO GTFS and Gazetteer centroids `data`
 - [ ] Need page (F5) with method and ACS vintage `P0`
 - [ ] Eligibility quiz (F6) `P0`

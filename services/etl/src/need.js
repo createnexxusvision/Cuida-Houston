@@ -29,6 +29,7 @@ export function computeNeed(capacityMap, acsMap) {
       pct_black: acs.pop_total ? round1(((acs.black_non_hispanic + acs.black_hispanic) / acs.pop_total) * 100) : null,
       black_hispanic: acs.black_hispanic,
       black_hispanic_moe: acs.black_hispanic_moe,
+      multi_county: acs.multi_county ?? false,
       acs_vintage: acs.acs_vintage,
     });
   }

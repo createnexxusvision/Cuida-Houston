@@ -8,7 +8,8 @@
 | TWC Child Care Availability Portal | Search | Shows open seats by age; **no public API found** → needs a data agreement | High |
 | Children at Risk desert map | Page review | Interactive only; no download/terms. We recompute with the same 3:1 definition | High |
 | Census Geocoder | API docs | Batch ≤10,000, returns tract/block | High |
-| Census ACS | Variable choice | B23008, B03002, C16001 by ZCTA. Verify IDs per year; show margins of error (Afro-Latino counts by ZIP are noisy) | Medium-high |
+| Census ACS | api.census.gov variable metadata | B23008_002/004/010/013 and B03002_001/004/012/014 labels verified for 2023 and 2024 5-year. API key required on every request. Show margins of error (Afro-Latino counts by ZIP are noisy) | High |
+| Census 2020 ZCTA–County relationship file | Via zctaCrosswalk package (census.gov blocked from build env) | 143 ZCTAs overlap Harris County; 22 also in another county. Regenerate with `scripts/build-zcta-list.md` | High (confirm with official file) |
 | METRO GTFS | Transitland | Static feed mirrored; METRO API portal uses subscription keys. Check license | Medium-high |
 | Census Gazetteer (ZCTA centroids) | — | Verify current file URL | Medium |
 

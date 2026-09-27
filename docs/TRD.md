@@ -81,5 +81,5 @@ Set an **AWS Budgets alarm at $10 and $50 on day one.**
 - Amplify doesn't expose console env vars to the SSR runtime; `amplify.yml` writes public-safe ones to `.env.production`. Never put the service role key in Amplify.
 - Set `AMPLIFY_MONOREPO_APP_ROOT=apps/web` in Amplify.
 - ZIP (USPS) ≠ ZCTA (Census). Search uses ZIP; need scores use ZCTA.
-- `HARRIS_PREFIXES` in `acs.js` is a rough filter; replace with a county–ZCTA crosswalk.
+- `acs.js` filters to Harris County with the Census 2020 ZCTA–county relationship file (143 ZCTAs; 22 cross a county line).
 - Licensed capacity ≠ open seats. The UI says so on every search.

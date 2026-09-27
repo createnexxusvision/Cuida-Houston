@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { createClient } from '@supabase/supabase-js';
 import { loadGtfs, parseGazetteer } from './gtfs.js';
-import { HARRIS_PREFIXES } from './acs.js';
+import { HARRIS_ZCTAS } from './acs.js';
 
 const { values } = parseArgs({ options: { gtfs: { type: 'string' }, gazetteer: { type: 'string' } } });
 const db = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
@@ -23,7 +23,7 @@ if (values.gtfs) {
 }
 if (values.gazetteer) {
   const rows = parseGazetteer(readFileSync(values.gazetteer, 'utf8'))
-    .filter((r) => HARRIS_PREFIXES.some((p) => r.zcta.startsWith(p)));
+    .filter((r) => HARRIS_ZCTAS.has(r.zcta));
   await upsertChunks('zcta_need', rows, 'zcta');
   console.log(`zcta centroids: ${rows.length}`);
 }

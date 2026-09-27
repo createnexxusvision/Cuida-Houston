@@ -75,7 +75,7 @@ test('ACS rows to ZCTA and need score', () => {
     ['ZCTA5 10001', '1', '1', '1', '1', '1', '1', '1', '1', '1', '10001'],
   ];
   const acs = rowsToZcta(header, rows);
-  assert.equal(acs.size, 2);
+  assert.equal(acs.size, 2); // 10001 (New York) is dropped by the Harris County crosswalk
   assert.equal(acs.get('77021').children_u6_working, 600);
   const need = computeNeed(capacityByZip(cleanRows(sample)), acs);
   const z21 = need.find((r) => r.zcta === '77021');
@@ -99,4 +99,17 @@ test('GTFS stops get the routes that serve them', async () => {
 test('Gazetteer ZCTA centroids', () => {
   const rows = parseGazetteer('GEOID\tALAND\tAWATER\tALAND_SQMI\tAWATER_SQMI\tINTPTLAT\tINTPTLONG                  \n77021\t1\t1\t1\t1\t29.695\t-95.356\n');
   assert.deepEqual(rows, [{ zcta: '77021', centroid_lat: 29.695, centroid_lng: -95.356 }]);
+});
+
+import { HARRIS_ZCTAS, MULTI_COUNTY_ZCTAS, fetchAcsByZcta } from '../src/acs.js';
+
+test('Harris County ZCTA crosswalk', () => {
+  assert.equal(HARRIS_ZCTAS.size, 143);
+  assert.ok(HARRIS_ZCTAS.has('77204')); // UH campus, missed by the old prefix filter
+  assert.ok(!HARRIS_ZCTAS.has('77469')); // Richmond, Fort Bend County
+  assert.ok(MULTI_COUNTY_ZCTAS.size > 0 && [...MULTI_COUNTY_ZCTAS].every((z) => HARRIS_ZCTAS.has(z)));
+});
+
+test('ACS fetch refuses to run without a key', async () => {
+  await assert.rejects(() => fetchAcsByZcta({ key: undefined }), /CENSUS_API_KEY is required/);
 });
