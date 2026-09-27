@@ -1,6 +1,6 @@
 # Cuida HOU — Technical Design (v0.1, 2026-09-26)
 
-## Architecture
+## Architecture (all AWS)
 
 ```mermaid
 flowchart LR
@@ -13,23 +13,25 @@ flowchart LR
   subgraph AWS
     E[EventBridge Scheduler<br/>3:00 a.m. Central]
     F[Lambda cuida-hou-etl<br/>Node 22]
-    G[Secrets Manager]
-    H[Amplify Hosting<br/>Next.js SSR + /api]
-  end
-  subgraph Supabase
-    I[(Postgres + PostGIS)]
+    G[Secrets Manager<br/>master · cuida_web · app keys]
+    H[Amplify Hosting<br/>Next.js SSR + /api<br/>SSR compute role]
+    DA[RDS Data API<br/>HTTPS]
+    I[(Aurora Serverless v2<br/>PostgreSQL 16 + PostGIS)]
   end
   E-->F
   G-->F
   A-->F
   C-->F
   B-->F
-  D-->|load-static.js weekly|I
-  F-->|upsert_providers, zcta_need|I
-  H-->|anon key: search_providers only|I
+  F-->|master login: upsert_* functions|DA
+  H-->|cuida_web login: search_providers, reference tables|DA
+  DA-->I
+  D-->|load-static.js from laptop|DA
 ```
 
-**Why Supabase and not RDS:** RDS supports PostGIS, but an always-on instance costs money from day one and needs VPC setup. Supabase is faster for the weekend. Migrating later is a standard `pg_dump`/restore; nothing in the app is Supabase-specific except the JS client.
+**Why Aurora Serverless v2 + Data API:** it's PostgreSQL with PostGIS (same SQL as before), it pauses when idle (`MinCapacity=0`), and the Data API lets Lambda and Amplify query it over HTTPS with IAM. That avoids a VPC-attached Lambda and a NAT gateway (roughly $30+/month on its own). Trade-off: the first request after a pause waits about 15 seconds, so keep `MinCapacity=0.5` during demos.
+
+**Two drivers, one SQL:** production uses the RDS Data API; local development and CI use `pg` against Postgres + PostGIS through `DATABASE_URL`. Every web query returns rows as JSON text (`to_jsonb(...)::text`) so both drivers give identical results, including arrays. The pipeline writes through `upsert_*` functions that take one `jsonb` parameter, because the Data API only sends scalar parameters. Payloads are chunked under 60 KB; responses stay under the Data API's 1 MiB limit.
 
 ## Pipeline (`services/etl`)
 
@@ -42,20 +44,20 @@ flowchart LR
 | Census | `acs.js` | B23008 (children under 6 by parents' work), B03002 (incl. Black Hispanic, `_014`) by ZCTA. **Verify variable IDs** against `variables.json` for the ACS year used |
 | Need | `need.js` | `seats_per_100 = capacity / children_u6_working × 100`; desert if < 33.3 |
 | Transit | `gtfs.js` + `load-static.js` | Streams `stop_times.txt`; routes per stop |
-| Load | `handler.js` | `upsert_providers()` RPC; missing operations marked `active=false`, never deleted |
+| Load | `handler.js` + `db.js` | `upsert_providers()`, `mark_providers_inactive()`, `upsert_zcta_need()` via Data API; missing operations marked inactive, never deleted |
 
 ## Data model
 
-See `supabase/migrations/20260926000000_init.sql`. Tables: `providers`, `zcta_need`, `transit_stops`, `pathway_steps`, `partners`, `provider_leads` (P1, PII), `seat_reports` (P1). Generated `geography` columns with GiST indexes.
+See `db/migrations/` (applied by `npm run db:migrate`, tracked in `schema_migrations`). Tables: `providers`, `zcta_need`, `transit_stops`, `pathway_steps`, `partners`, `provider_leads` (P1, PII), `seat_reports` (P1). Generated `geography` columns with GiST indexes.
 
-## Access control (tested locally with PostgREST)
+## Access control (tested: `services/etl/test/e2e-local.mjs`, runs in CI)
 
-| Role | providers | zcta_need / transit / pathway | search_providers() | upsert_providers() | provider_leads |
+| Login | providers (raw rows) | zcta_need / transit / pathway | search_providers() | upsert_* functions | provider_leads |
 |---|---|---|---|---|---|
-| anon (web) | ❌ blocked | ✅ read | ✅ | ❌ blocked | ❌ |
-| service_role (Lambda) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `cuida_web` (web app) | ❌ denied | ✅ read | ✅ | ❌ denied | ❌ denied |
+| `cuida_admin` master (pipeline, migrations) | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-`search_providers()` is `security definer` and returns only public-safe columns: `address_line` is null and coordinates are approximate for home providers.
+`search_providers()` is `security definer` and returns only public-safe columns: `address_line` is null and coordinates are rounded for home providers. The Amplify compute role can read only the `cuida_web` secret, never the master secret.
 
 ## API
 
@@ -67,18 +69,21 @@ See `supabase/migrations/20260926000000_init.sql`. Tables: `providers`, `zcta_ne
 
 ## Hosting and cost
 
-| Item | Hackathon | Pilot |
-|---|---|---|
-| Amplify, Lambda, EventBridge, Secrets Manager | New-account credits (up to $200) / free plan for accounts created after Jul 15, 2025 | Pay as you go; low at pilot traffic. Apply for AWS nonprofit/startup credits |
-| Supabase | Free (pauses after 7 idle days) | Pro (~$25/mo; check current pricing) |
-| Census, HHSC, Geocoder, GTFS | Free | Free |
-| People: coordinator, Spanish review, legal review | Volunteers | The real pilot cost; budget TBD |
+| Item | Hackathon / pilot |
+|---|---|
+| Aurora Serverless v2 | Per ACU-hour (about $0.12 in us-east-1, estimate) + storage. Pauses when idle; ~$1.50/day if held at 0.5 ACU |
+| Lambda, EventBridge, SNS, Data API, Amplify | Cents to a few dollars at this traffic |
+| Census, HHSC, Geocoder, GTFS | Free |
+| Account credit | $100, enough for the hackathon and a pilot month |
+| People: coordinator, legal review | Still the real pilot cost |
 
-Set an **AWS Budgets alarm at $10 and $50 on day one.**
+Set **AWS Budgets alarms at $10 and $50** before deploying.
 
 ## Known gotchas
 
-- Amplify doesn't expose console env vars to the SSR runtime; `amplify.yml` writes public-safe ones to `.env.production`. Never put the service role key in Amplify.
+- Amplify doesn't expose console env vars to the SSR runtime; `amplify.yml` writes the non-secret ARNs to `.env.production`. Database access comes from the SSR compute role, not stored keys. Attach the role at branch level (public repo).
+- Aurora resume after auto-pause takes ~15 s (longer after 24 h idle).
+- The Data API is only tested here through its contract; the `pg` path is tested end to end. Test on AWS before the demo.
 - Set `AMPLIFY_MONOREPO_APP_ROOT=apps/web` in Amplify.
 - ZIP (USPS) ≠ ZCTA (Census). Search uses ZIP; need scores use ZCTA.
 - `acs.js` filters to Harris County with the Census 2020 ZCTA–county relationship file (143 ZCTAs; 22 cross a county line).

@@ -18,13 +18,13 @@ Built for the Impact Hub Houston hackathon, Sept 2026. Targets UN SDGs 5, 8, 10 
 | Web | Next.js 15 (App Router, TypeScript), locale routes `/es` and `/en` |
 | Hosting | AWS Amplify Hosting (`amplify.yml`) |
 | Data pipeline | Node 22 on AWS Lambda, nightly via EventBridge Scheduler (`infra/template.yaml`) |
-| Database | Supabase Postgres + PostGIS (`supabase/migrations/`) |
+| Database | Aurora Serverless v2 PostgreSQL + PostGIS via RDS Data API (`db/migrations/`) |
 | Secrets | AWS Secrets Manager |
 
 ```
 apps/web/            Next.js app (search, provider pathway, /api/providers)
 services/etl/        Data pipeline: HHSC licensing -> clean -> geocode -> Census ACS -> need score
-supabase/            SQL migration (schema, RLS, search function) and pathway seed content
+db/                  SQL migrations (schema, roles, search function) and pathway seed content
 infra/               AWS SAM template for the Lambda pipeline + setup guide
 docs/                PRD, TRD, risk register, data sources, hackathon plan, backlog, pitch deck
 ```
@@ -37,18 +37,17 @@ nvm use                      # Node 22
 npm install
 cp .env.example .env         # fill in keys (see below)
 
-# Database: local Supabase stack (requires Docker) or a hosted Supabase project
-npx supabase init            # first time only: creates supabase/config.toml, keeps existing migrations
-npx supabase start           # or create a project at supabase.com
-npx supabase db reset        # applies supabase/migrations + supabase/seed.sql
+# Database: local Postgres 16 + PostGIS (sudo apt install postgresql-16-postgis-3), or Aurora on AWS (infra/README.md)
+npm run db:seed              # applies db/migrations + db/seed.sql and sets the read-only cuida_web login
 
 npm test                     # pipeline + quiz unit tests (no network)
-npm run etl:dry-run          # pulls live HHSC + Census data, prints the need ranking, writes nothing
+npm run etl:dry-run          # pulls live HHSC + Census data (needs CENSUS_API_KEY), writes nothing
 npm run etl:sync             # writes providers + zcta_need to the database
-npm run dev                  # http://localhost:3000 -> redirects to /es or /en
+DATABASE_URL=postgres://cuida_web:<WEB_DB_PASSWORD>@localhost:5432/cuida npm run dev   # web as the read-only user
+# http://localhost:3000 -> redirects to /es or /en
 ```
 
-Free keys you need: a [Census API key](https://api.census.gov/data/key_signup.html) and a [data.texas.gov app token](https://data.texas.gov) (optional but avoids throttling).
+Keys: a [Census API key](https://api.census.gov/data/key_signup.html) (required) and a [data.texas.gov app token](https://data.texas.gov). Locally they go in `.env`; on AWS in the `cuida-hou/app-keys` secret. Deploying: see [infra/README.md](infra/README.md).
 
 Reference data (METRO bus stops, ZCTA centroids for ZIP search) loads separately:
 
@@ -72,7 +71,7 @@ Full details and known gaps: [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
 
 - Home daycares are shown at an approximate location (~500 m) without a street address, even though the state publishes it.
 - Search needs no account and collects nothing about children.
-- The public API key can only call `search_providers()` and read reference tables. Row-level security blocks direct reads of `providers` and all writes.
+- The web app logs in as `cuida_web`, which can only call `search_providers()` and read three reference tables. It cannot read raw provider rows or write anything (checked by `services/etl/test/e2e-local.mjs` in CI).
 
 ## Documents
 

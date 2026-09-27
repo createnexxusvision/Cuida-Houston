@@ -5,7 +5,7 @@ L = likelihood, I = impact (H/M/L). Status: Confirmed = verified by research; As
 ## Project-stopping issues
 | ID | Issue | Why it blocks |
 |---|---|---|
-| B1 | Hackathon rules unknown | Can't enter if own challenges aren't allowed; IP terms affect what happens after |
+| B1 | ~~Hackathon rules~~ Own challenges accepted; deadline 9/27 11:45 a.m. CT. Code ownership still unconfirmed | IP terms affect what happens after |
 | B2 | No public vacancy API | Parent side shows capacity, not open seats |
 | B3 | No support partner | Door 2 becomes a checklist; sign-ups stall |
 | B4 | Deed restrictions | Can legally bar a home business after she's invested in licensing |
@@ -34,7 +34,9 @@ L = likelihood, I = impact (H/M/L). Status: Confirmed = verified by research; As
 | R17 | Supply | Startup costs deter providers | H/H | Microgrants via partners; show costs early | Costs unverified |
 | R18 | Supply | Thin margins; closures | M/H | Subsidy enrollment, TRS, business coaching | Assumed |
 | R19 | Supply | Subsidy funding, not seats, limits low-income families | H/M | Don't claim waitlist reduction | Confirmed |
-| R20 | Tech | Supabase pause; AWS bill after credits | M/M | Paid Supabase before pilot; Budgets alarms; tags | Confirmed |
+| R20 | Tech | AWS bill after the $100 credit; Aurora left at high capacity | L/M | Auto-pause (`MinCapacity=0`), `MaxCapacity=2`, Budgets alarms at $10/$50, tags | Mitigated |
+| R30 | Tech | Aurora resume delay (~15 s) makes the first search after idle look broken | M/M | `MinCapacity=0.5` during demos; 30 s client timeout | Known |
+| R31 | Tech | Data API behavior differs from local `pg` driver | M/M | All queries return JSON text; test on AWS before the demo | Untested on AWS |
 | R21 | Tech | Slow phones | M/M | Server rendering, list-first, small bundles | Assumed |
 | R22 | Team | Teammates leave after Sunday | H/H | Named pilot owners or partner handoff | Likely |
 | R23 | Funding | Grant dependence | H/M | Grant plan; low costs | Assumed |

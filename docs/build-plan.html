@@ -123,14 +123,14 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 <main>
 
 <section class="doc" id="summary">
-  <span class="eyebrow">Cuida HOU · PRD + TRD · v0.1 · Sept 26, 2026</span>
+  <span class="eyebrow">Cuida HOU · PRD + TRD · v0.2 · Sept 26, 2026</span>
   <h1>Cuida HOU build plan</h1>
   <p class="lead">A bilingual, two-sided childcare network for Houston. Door 1 helps parents find licensed care they can reach. Door 2 guides women in childcare-desert ZIP codes through opening a licensed home daycare.</p>
   <div class="kv">
     <div><b>Owner</b>Danny Arzu</div>
     <div><b>Context</b>Impact Hub Houston hackathon 2026</div>
     <div><b>SDGs</b>5 · 8 · 10 · 11</div>
-    <div><b>Stack</b>Next.js on AWS Amplify · Supabase Postgres + PostGIS · Lambda ETL</div>
+    <div><b>Stack</b>All AWS: Amplify · Aurora Serverless v2 (PostgreSQL + PostGIS) · Lambda</div>
   </div>
   <h3>Verdict</h3>
   <p>The hackathon prototype is buildable in 48 hours on public data. The core state licensing dataset is open, public domain, has an API and was updated September 15, 2026.</p>
@@ -146,7 +146,7 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   <h2>Issues that could stop the project</h2>
   <p>Resolve these first. Each could block a stage outright, not just slow it down.</p>
   <div class="blockers">
-    <div class="blocker"><span class="id">B1 · blocks entry</span><h3>Hackathon rules are unknown</h3><p>We haven't confirmed whether teams can bring their own challenge or must pick from the 14 posted, who owns the code, or the submission deadline and format. Ask the organizers today.</p></div>
+    <div class="blocker"><span class="id">B1 · mostly resolved</span><h3>Hackathon rules</h3><p>Own challenges are accepted. Submission is due Sunday 9/27 at 11:45 a.m. Central. Code ownership is still unconfirmed; ask before adding a license.</p></div>
     <div class="blocker"><span class="id">B2 · blocks the "open seats" promise</span><h3>No public vacancy API</h3><p>The state dataset has licensed capacity, not open seats. The Texas Workforce Commission (TWC) portal shows open seats, but I found no public API or download. Without a data-sharing agreement, the parent side shows capacity and asks parents to call.</p></div>
     <div class="blocker"><span class="id">B3 · blocks Door 2 at pilot</span><h3>No partner to take the handoff</h3><p>The app can guide a woman to the licensing forms, but coaching, training and startup costs need a partner. Without one, Door 2 is a checklist and sign-ups stall.</p></div>
     <div class="blocker"><span class="id">B4 · blocks individual providers</span><h3>Deed restrictions</h3><p>Houston has no zoning, but private deed restrictions can prohibit home businesses, and the City enforces them. A would-be provider could complete licensing steps and then be barred by her subdivision.</p></div>
@@ -172,7 +172,7 @@ a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
       <tr><td>HHSC "Become a Child Care Home Provider" page</td><td>Returned 403 to automated fetch.</td><td>Pathway steps must be transcribed and checked by hand from HHSC pages and the Chapter 747 standards PDF.</td><td><span class="pill p-high">Manual work</span></td></tr>
       <tr><td>Houston deed restrictions (City Planning)</td><td>The City confirms deed restrictions may legally prohibit home businesses. The Legal Department enforces them.</td><td>Add a deed-restriction check step to Door 2 (B4).</td><td><span class="pill p-ok">High</span></td></tr>
       <tr><td>Texas SB 599 (89th session)</td><td>Would bar cities from holding home providers to standards beyond state rules. I could not confirm it passed. It likely does not reach private HOA covenants.</td><td>Do not cite it as law until checked on Texas Legislature Online.</td><td><span class="pill p-block">Unverified</span></td></tr>
-      <tr><td>Supabase free tier</td><td>Free projects pause after 7 days of low activity. Paid projects don't pause.</td><td>Fine for the hackathon. Upgrade before the pilot.</td><td><span class="pill p-ok">High</span></td></tr>
+      <tr><td>Aurora Serverless v2 (replaces Supabase)</td><td>PostgreSQL with PostGIS. Can scale to zero and auto-pause on 16.3+; resume takes about 15 s. The RDS Data API wakes a paused cluster and works over HTTPS with IAM. Not supported on T instance classes; 1 MiB response limit.</td><td>No VPC or NAT gateway needed. Keep <code>MinCapacity=0.5</code> during demos.</td><td><span class="pill p-ok">High · AWS docs</span></td></tr><tr><td>Amplify SSR compute role</td><td>Amplify can attach an IAM role to server-side code, so the app needs no stored AWS keys. AWS recommends branch-level roles for public repos.</td><td>The web app reads through the Data API with a read-only database login.</td><td><span class="pill p-ok">High · AWS docs</span></td></tr>
       <tr><td>AWS hosting (replaces Vercel)</td><td>Amplify Hosting supports server-rendered Next.js. New AWS accounts made after July 15, 2025 get up to $200 in credits and a 6-month free plan instead of the old 12-month free tier.</td><td>Hackathon and early pilot can run on credits. Set a billing alarm on day one. Confirm Amplify supports the Next.js version you pick.</td><td><span class="pill p-high">Medium-high · confirm version support</span></td></tr>
     </tbody>
   </table></div>
@@ -277,7 +277,7 @@ flowchart LR
     H[Join to ZCTA and tract]
     I[Compute need score]
   end
-  subgraph Store[Supabase Postgres + PostGIS]
+  subgraph Store[Aurora Serverless v2 · PostgreSQL + PostGIS · via RDS Data API]
     J[(providers)]
     K[(zcta_need)]
     L[(transit_stops)]
@@ -295,7 +295,7 @@ flowchart LR
   J-->R; K-->R; L-->R; M-->P
   R-->O; R-->Q; P-->N
   </pre>
-  <p>AWS Amplify Hosting builds and serves the Next.js app, including server-rendered pages and API routes, behind CloudFront. Supabase Postgres with PostGIS holds the data and handles distance queries. A Lambda function in Node 22, triggered nightly by EventBridge Scheduler, runs the data pipeline. Secrets live in AWS Secrets Manager. For local development, use VS Code with WSL Ubuntu, the AWS CLI and the Supabase CLI running a local stack.</p><p class="src">Why keep Supabase instead of Amazon RDS: RDS supports PostGIS too, but an always-on instance costs money from day one and needs VPC setup. Supabase is the faster path for the weekend. Moving to RDS later is a standard Postgres dump and restore.</p>
+  <p>Everything runs on AWS. Amplify Hosting serves the Next.js app, including server-rendered pages and API routes. Aurora Serverless v2 (PostgreSQL with PostGIS) holds the data and handles distance queries. A Lambda function in Node 22, triggered nightly by EventBridge Scheduler, runs the data pipeline. Both reach the database through the RDS Data API over HTTPS, so there is no VPC or NAT gateway to set up or pay for. Secrets live in AWS Secrets Manager.</p><p class="src">The web app logs in as <code>cuida_web</code>, a read-only role that can only run the search function and read reference tables. The pipeline uses the master login. Locally, the same SQL runs on Postgres + PostGIS through <code>DATABASE_URL</code>.</p>
 </section>
 
 <section class="doc" id="trd-data">
@@ -393,7 +393,7 @@ seat_reports(operation_id text, age_group text, open_seats int, source text,
     <li><b>Provider leads (P1).</b> Minimal fields, explicit consent naming the partner, encryption, deletion on request, retention limit (suggest 12 months). Have a lawyer check Texas privacy law obligations before collecting leads.</li>
     <li><b>No endorsements.</b> Present state data as-is, with a disclaimer that the listing is not a recommendation and families should visit and verify.</li>
     <li><b>Fraud.</b> Only list operations that exist in the state dataset. Self-reported seats must tie to a verified operation ID.</li>
-    <li><b>Security basics.</b> Supabase row-level security on every table, service keys only on the server, dependency scanning, secrets in AWS Secrets Manager, least-privilege IAM roles for Amplify and Lambda, AWS Budgets alarm on the account.</li>
+    <li><b>Security basics.</b> Read-only <code>cuida_web</code> database role for the web app (tested in CI), master login only in the pipeline, dependency scanning, secrets in AWS Secrets Manager, least-privilege IAM roles for Amplify and Lambda, AWS Budgets alarm on the account.</li>
   </ul>
 </section>
 
@@ -403,7 +403,7 @@ seat_reports(operation_id text, age_group text, open_seats int, source text,
   <div class="tbl"><table>
     <thead><tr><th>Item</th><th>Hackathon</th><th>Pilot</th><th>Confidence</th></tr></thead>
     <tbody>
-      <tr><td>Supabase</td><td>Free (pauses after 7 days idle)</td><td>Pro plan, about $25/month</td><td><span class="pill p-high">Medium · check current pricing</span></td></tr>
+      <tr><td>Aurora Serverless v2</td><td>Covered by the $100 credit; pauses when idle</td><td>About $0.12 per ACU-hour plus storage; ~$1.50/day at 0.5 ACU</td><td><span class="pill p-high">Estimate · check pricing</span></td></tr>
       <tr><td>AWS Amplify Hosting, Lambda, EventBridge, Secrets Manager</td><td>New-account credits (up to $200) or free plan</td><td>Pay as you go; expected low at pilot traffic. Apply for AWS nonprofit or startup credits.</td><td><span class="pill p-high">Estimate · check pricing pages</span></td></tr>
       <tr><td>Census API, Geocoder, HHSC API, GTFS</td><td>Free</td><td>Free</td><td><span class="pill p-ok">High</span></td></tr>
       <tr><td>SMS (P1)</td><td>None</td><td>Per-message fees plus A2P 10DLC registration</td><td><span class="pill p-high">Get a quote</span></td></tr>
@@ -419,7 +419,7 @@ seat_reports(operation_id text, age_group text, open_seats int, source text,
   <span class="eyebrow">Build</span>
   <h2>Build plan by phase</h2>
   <div class="phase">
-    <div><span class="d">Phase 0 · before build</span><h3>Unblock</h3><ul><li>Get hackathon rules (B1)</li><li>Recruit teammates: a front-end dev, a Spanish reviewer, a data person</li><li>Get Census and Socrata keys, create the Supabase project</li><li>Run a test data pull and geocode</li></ul></div>
+    <div><span class="d">Phase 0 · before build</span><h3>Unblock</h3><ul><li>Get hackathon rules (B1)</li><li>Recruit teammates: a front-end dev, a Spanish reviewer, a data person</li><li>Get Census and Socrata keys, deploy the AWS stack</li><li>Run a test data pull and geocode</li></ul></div>
     <div><span class="d">Phase 1 · hackathon</span><h3>Prototype</h3><ul><li>F1–F7 on Harris County data</li><li>Need map plus two Door 2 permit paths</li><li>Demo script built around two personas</li></ul></div>
     <div><span class="d">Phase 2 · Oct–Dec 2026</span><h3>Validate</h3><ul><li>Interviews in 2–3 desert ZIPs</li><li>Ask TWC and Workforce Solutions about vacancy data (B2)</li><li>Sign a support partner (B3)</li><li>Legal and Spanish review</li></ul></div>
     <div><span class="d">Phase 3 · Jan–Mar 2027</span><h3>Pilot</h3><ul><li>F8–F11 live</li><li>First provider cohort with the partner</li><li>Upgrade hosting</li><li>March report on leading indicators</li></ul></div>
@@ -434,7 +434,7 @@ seat_reports(operation_id text, age_group text, open_seats int, source text,
   <div class="tbl"><table>
     <thead><tr><th>Hours</th><th>Work</th><th>Done when</th></tr></thead>
     <tbody>
-      <tr><td class="num">0–3</td><td>Repo scaffold (Next.js, next-intl, Supabase local), schema migration, ETL script pulls Harris County rows</td><td>About N rows in <code>providers</code>. Check count against the portal.</td></tr>
+      <tr><td class="num">0–3</td><td>Repo scaffold (Next.js, local Postgres + PostGIS), schema migration, ETL script pulls Harris County rows</td><td>About N rows in <code>providers</code>. Check count against the portal.</td></tr>
       <tr><td class="num">3–7</td><td>Clean and geocode (Census batch), load GTFS stops, precompute nearest stops</td><td>90%+ exact geocodes. Unmatched rows flagged.</td></tr>
       <tr><td class="num">7–10</td><td>Pull ACS tables, compute need score, compare desert ZIPs with Children at Risk</td><td>Our desert list reviewed. Differences explained.</td></tr>
       <tr><td class="num">10–18</td><td>Door 1: search page, filters, result cards, inspection summary, stops</td><td>Persona 1 finds a 6 a.m. option near her bus in Spanish.</td></tr>
@@ -473,7 +473,7 @@ seat_reports(operation_id text, age_group text, open_seats int, source text,
       <tr><td>R17</td><td>Supply</td><td>Startup costs (background checks, safety equipment, training) deter providers</td><td>H / H</td><td>Find microgrants or startup support through partners. Show costs up front.</td><td><span class="pill p-high">Costs unverified</span></td></tr>
       <tr><td>R18</td><td>Supply</td><td>Home daycare margins are thin; new providers close</td><td>M / H</td><td>Connect to subsidy enrollment, Texas Rising Star support and business coaching</td><td><span class="pill p-med">Assumed</span></td></tr>
       <tr><td>R19</td><td>Supply</td><td>Subsidy funding, not seats, limits low-income families</td><td>H / M</td><td>Don't claim the tool shortens the waitlist. Fix slide 4.</td><td><span class="pill p-ok">Confirmed</span></td></tr>
-      <tr><td>R20</td><td>Tech</td><td>Supabase free tier pauses; AWS bill surprises after credits run out</td><td>M / M</td><td>Upgrade Supabase before the pilot. AWS Budgets alarm at $10 and $50. Tag all resources.</td><td><span class="pill p-ok">Confirmed</span></td></tr><tr><td>R29</td><td>Tech</td><td>Amplify server-side environment variables aren&#39;t exposed to the Next.js runtime by default</td><td>M / M</td><td>Write the needed variables into <code>.env.production</code> in <code>amplify.yml</code> during the build, or read them from Secrets Manager at runtime</td><td><span class="pill p-high">Known gotcha · test early</span></td></tr>
+      <tr><td>R20</td><td>Tech</td><td>AWS bill after the $100 credit; Aurora left at high capacity; ~15 s resume after idle</td><td>L / M</td><td>Auto-pause, MaxCapacity 2, Budgets alarms at $10 and $50, MinCapacity 0.5 during demos.</td><td><span class="pill p-ok">Confirmed</span></td></tr><tr><td>R29</td><td>Tech</td><td>Amplify server-side environment variables aren&#39;t exposed to the Next.js runtime by default</td><td>M / M</td><td>Write the needed variables into <code>.env.production</code> in <code>amplify.yml</code> during the build, or read them from Secrets Manager at runtime</td><td><span class="pill p-high">Known gotcha · test early</span></td></tr>
       <tr><td>R21</td><td>Tech</td><td>Weak performance on slow phones</td><td>M / M</td><td>Server rendering, list-first view, small bundles</td><td><span class="pill p-med">Assumed</span></td></tr>
       <tr><td>R22</td><td>Team</td><td>Hackathon teammates leave after Sunday</td><td>H / H</td><td>Name owners for pilot roles. Consider handing off to a partner org.</td><td><span class="pill p-high">Likely</span></td></tr>
       <tr><td>R23</td><td>Funding</td><td>Parents can't pay, so revenue depends on grants or government</td><td>H / M</td><td>Grant plan (City, county, foundations, workforce boards). Keep costs low.</td><td><span class="pill p-med">Assumed</span></td></tr>
@@ -536,7 +536,7 @@ seat_reports(operation_id text, age_group text, open_seats int, source text,
     <li>After the pilot, do you want to run this long term, or hand it to a partner organization?</li>
     <li>Should I fix slide 4 and add a data-limits note to the deck now?</li>
   </ol>
-  <div class="callout teal"><b>Items to verify manually</b><p>SB 599 passage and scope; Amplify support for your Next.js version; AWS credit eligibility for your account; current Supabase Pro price; whether the TWC portal is fully in Spanish; home-provider startup costs (background checks, training); a newer TWC provider report; METRO GTFS license terms.</p></div>
+  <div class="callout teal"><b>Items to verify manually</b><p>SB 599 passage and scope; Amplify support for your Next.js version; AWS credit eligibility for your account; Aurora engine version available in your region; whether the TWC portal is fully in Spanish; home-provider startup costs (background checks, training); a newer TWC provider report; METRO GTFS license terms.</p></div>
 </section>
 
 <section class="doc" id="sources">
@@ -552,7 +552,7 @@ seat_reports(operation_id text, age_group text, open_seats int, source text,
     <li><a href="https://www.houstontx.gov/planning/Neighborhood/deed_restr.html">City of Houston, About Deed Restrictions</a>.</li>
     <li><a href="https://www.texaspolicyresearch.com/bills/89th-legislature-sb-599/">Texas Policy Research on SB 599</a> and <a href="https://capitol.texas.gov/tlodocs/89R/analysis/pdf/SB00599F.pdf">Senate bill analysis</a> (passage unverified).</li>
     <li><a href="https://www.transit.land/feeds/f-9vk-metropolitantransitauthorityofharriscounty">Transitland, METRO GTFS feed</a>; <a href="https://api-portal.ridemetro.org/">METRO API portal</a>.</li>
-    <li><a href="https://supabase.com/docs/guides/platform/free-project-pausing">Supabase free project pausing</a>.</li>
+    <li><a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2-auto-pause.html">Aurora Serverless v2 auto-pause</a>; <a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.limitations.html">RDS Data API limitations</a>; <a href="https://docs.aws.amazon.com/amplify/latest/userguide/amplify-SSR-compute-role.html">Amplify SSR compute role</a>.</li>
     <li><a href="https://aws.amazon.com/about-aws/whats-new/2025/07/aws-free-tier-credits-month-free-plan/">AWS Free Tier credits and 6-month free plan</a> (July 2025); <a href="https://aws.amazon.com/amplify/pricing/">AWS Amplify pricing</a>.</li>
   </ul>
 </section>
