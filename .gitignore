@@ -7,6 +7,6 @@ out/
 .aws-sam/
 *.log
 .DS_Store
-data/
+/services/etl/data/
 *.tsbuildinfo
 next-env.d.ts
