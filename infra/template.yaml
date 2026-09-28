@@ -1,73 +1,21 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  Cuida HOU: Aurora Serverless v2 (PostgreSQL + PostGIS, RDS Data API), nightly data pipeline (Lambda +
-  EventBridge Scheduler), secrets, failure alarm, and the IAM role Amplify's server-side code uses.
-  No VPC endpoints or NAT gateway: Lambda and Amplify reach the database through the Data API over HTTPS.
+  Cuida HOU: nightly data pipeline (Lambda + EventBridge Scheduler) and a failure alarm.
+  Database is Neon Postgres (PostGIS), reached over the internet via DATABASE_URL — no VPC,
+  no AWS-managed database. Amplify's web app also connects with DATABASE_URL, set directly
+  in the Amplify console; there is no compute role for it in this stack.
 
 Parameters:
   AlertEmail:
     Type: String
     Description: Email for pipeline failure alarms
-  EngineVersion:
+  DatabaseUrl:
     Type: String
-    Default: '16.6'
-    Description: >
-      Aurora PostgreSQL version. Must support Serverless v2 auto-pause (16.3+). Check with:
-      aws rds describe-db-engine-versions --engine aurora-postgresql --query "DBEngineVersions[].EngineVersion"
-  MinCapacity:
-    Type: Number
-    Default: 0
-    AllowedValues: [0, 0.5, 1]
-    Description: 0 lets the database pause when idle (first request after a pause takes ~15 s). Use 0.5 during the demo.
-  MaxCapacity:
-    Type: Number
-    Default: 2
-    Description: Upper limit in Aurora capacity units (ACUs); caps cost.
+    NoEcho: true
+    Description: Neon Postgres connection string (pooled), e.g. postgresql://user:pass@host/db?sslmode=require
 
 Resources:
-  # ---------------- Database ----------------
-  DbCluster:
-    Type: AWS::RDS::DBCluster
-    DeletionPolicy: Snapshot
-    UpdateReplacePolicy: Snapshot
-    Properties:
-      DBClusterIdentifier: cuida-hou
-      Engine: aurora-postgresql
-      EngineVersion: !Ref EngineVersion
-      DatabaseName: cuida
-      MasterUsername: cuida_admin
-      ManageMasterUserPassword: true          # password lives in Secrets Manager, never in the template
-      EnableHttpEndpoint: true                # RDS Data API
-      StorageEncrypted: true
-      BackupRetentionPeriod: 1
-      ServerlessV2ScalingConfiguration:
-        MinCapacity: !Ref MinCapacity
-        MaxCapacity: !Ref MaxCapacity
-        SecondsUntilAutoPause: 3600
-      Tags: [{ Key: project, Value: cuida-hou }]
-
-  DbWriter:
-    Type: AWS::RDS::DBInstance
-    Properties:
-      DBClusterIdentifier: !Ref DbCluster
-      DBInstanceClass: db.serverless
-      Engine: aurora-postgresql
-      PubliclyAccessible: false
-      Tags: [{ Key: project, Value: cuida-hou }]
-
-  # Login for the web app's least-privilege database role (cuida_web). `npm run db:migrate` applies it.
-  WebDbSecret:
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Name: cuida-hou/web-db
-      Description: cuida_web database login (read-only role used by the web app)
-      GenerateSecretString:
-        SecretStringTemplate: '{"username":"cuida_web"}'
-        GenerateStringKey: password
-        PasswordLength: 32
-        ExcludePunctuation: true
-
   # Census + data.texas.gov keys. Set real values after deploy (see infra/README.md).
   AppKeysSecret:
     Type: AWS::SecretsManager::Secret
@@ -89,23 +37,15 @@ Resources:
       Timeout: 900
       Environment:
         Variables:
-          DB_DRIVER: data-api
-          DB_CLUSTER_ARN: !GetAtt DbCluster.DBClusterArn
-          DB_SECRET_ARN: !GetAtt DbCluster.MasterUserSecret.SecretArn
-          DB_NAME: cuida
+          DATABASE_URL: !Ref DatabaseUrl
           APP_SECRET_ARN: !Ref AppKeysSecret
           COUNTY: HARRIS
           ACS_YEAR: '2024'
       Policies:
         - Statement:
             - Effect: Allow
-              Action: [rds-data:ExecuteStatement, rds-data:BatchExecuteStatement]
-              Resource: !GetAtt DbCluster.DBClusterArn
-            - Effect: Allow
               Action: secretsmanager:GetSecretValue
-              Resource:
-                - !GetAtt DbCluster.MasterUserSecret.SecretArn
-                - !Ref AppKeysSecret
+              Resource: !Ref AppKeysSecret
       Events:
         Nightly:
           Type: ScheduleV2
@@ -139,43 +79,8 @@ Resources:
       TreatMissingData: notBreaching
       AlarmActions: [!Ref AlertTopic]
 
-  # ---------------- Web (Amplify Hosting SSR compute role) ----------------
-  # Attach in the Amplify console: App settings -> IAM roles -> Compute role.
-  WebComputeRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: cuida-hou-web-compute
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal: { Service: amplify.amazonaws.com }
-            Action: sts:AssumeRole
-      Policies:
-        - PolicyName: read-through-data-api
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action: rds-data:ExecuteStatement
-                Resource: !GetAtt DbCluster.DBClusterArn
-              - Effect: Allow
-                Action: secretsmanager:GetSecretValue
-                Resource: !Ref WebDbSecret     # only the read-only login, never the master secret
-
 Outputs:
-  DbClusterArn:
-    Value: !GetAtt DbCluster.DBClusterArn
-  MasterSecretArn:
-    Description: Pipeline + migrations only. Never give this to the web app.
-    Value: !GetAtt DbCluster.MasterUserSecret.SecretArn
-  WebSecretArn:
-    Description: Use as DB_SECRET_ARN in Amplify.
-    Value: !Ref WebDbSecret
   AppKeysSecretArn:
     Value: !Ref AppKeysSecret
-  WebComputeRoleArn:
-    Description: Attach to the Amplify app as its SSR compute role.
-    Value: !GetAtt WebComputeRole.Arn
   EtlFunctionName:
     Value: !Ref EtlFunction

@@ -10,9 +10,10 @@ applications:
             - cd ../.. && npm ci && cd apps/web
         build:
           commands:
-            # Amplify does not pass console env vars to the SSR runtime; write the non-secret ones for Next.js.
-            # These are ARNs, not passwords. Access comes from the SSR compute role (IAM), not from keys.
-            - env | grep -E '^(DB_CLUSTER_ARN|DB_SECRET_ARN|DB_NAME|AWS_REGION)=' >> .env.production
+            # Amplify does not pass console env vars to the SSR runtime; write it for Next.js to pick up.
+            # DATABASE_URL is a real secret (Neon connection string) - set it in the Amplify console as
+            # a protected/secret env var, never commit it, never echo it in build logs.
+            - env | grep -E '^DATABASE_URL=' >> .env.production
             - npm run build
       artifacts:
         baseDirectory: .next
