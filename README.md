@@ -1,5 +1,7 @@
 # Cuida HOU
 
+![Cuida HOU: Houston's childcare network. Find care, build care. A mother and child, the Houston skyline, a METRO bus, and a phone showing licensed childcare search by ZIP code, child age, subsidy and nearby bus routes, in English and Spanish.](docs/images/cuida-hou-banner.jpg)
+
 **Una red de cuidado infantil para Houston · A bilingual childcare network for Houston**
 
 Cuida HOU has two doors:
@@ -18,7 +20,7 @@ Built for the Impact Hub Houston hackathon, Sept 2026. Targets UN SDGs 5, 8, 10 
 | Web | Next.js 15 (App Router, TypeScript), locale routes `/es` and `/en` |
 | Hosting | AWS Amplify Hosting (`amplify.yml`) |
 | Data pipeline | Node 22 on AWS Lambda, nightly via EventBridge Scheduler (`infra/template.yaml`) |
-| Database | Aurora Serverless v2 PostgreSQL + PostGIS via RDS Data API (`db/migrations/`) |
+| Database | Neon Postgres + PostGIS via `DATABASE_URL` (`db/migrations/`) |
 | Secrets | AWS Secrets Manager |
 
 ```
